@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{80beea12-f65c-41dc-a10d-81fea9a01c3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Scene">
+      <UniqueIdentifier>{55bf6ff6-3351-4495-8756-c1ad62170a3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Utility">
+      <UniqueIdentifier>{07a31044-9ea3-4f9b-904f-fcd5bdfd43de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Scene\SampleScene">
+      <UniqueIdentifier>{7c4974fa-b400-4955-8ee8-43c01dd97140}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GameObject">
+      <UniqueIdentifier>{a76aa217-70e0-4b4a-a725-8d1f3938de42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GameObject\SampleObject">
+      <UniqueIdentifier>{067aa7eb-156d-43ad-85b0-815fca504c68}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneBase.cpp">
+      <Filter>Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneManager.cpp">
+      <Filter>Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utility\Vector2D.cpp">
+      <Filter>Source\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SampleScene\SampleScene.cpp">
+      <Filter>Source\Scene\SampleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\GameObject.cpp">
+      <Filter>Source\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\SampleObject\SampleObject.cpp">
+      <Filter>Source\GameObject\SampleObject</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\SystemTypes.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneBase.h">
+      <Filter>Source\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneManager.h">
+      <Filter>Source\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utility\Vector2D.h">
+      <Filter>Source\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SampleScene\SampleScene.h">
+      <Filter>Source\Scene\SampleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject\GameObject.h">
+      <Filter>Source\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject\SampleObject\SampleObject.h">
+      <Filter>Source\GameObject\SampleObject</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
