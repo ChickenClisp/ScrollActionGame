@@ -2,6 +2,7 @@
 
 SceneBase::SceneBase()
 	: screen_offset(Vector2D())
+	, camera_position(Vector2D())
 {
 }
 

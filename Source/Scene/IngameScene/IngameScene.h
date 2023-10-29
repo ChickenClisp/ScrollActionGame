@@ -6,18 +6,21 @@
  * サンプルシーン
  * サンプル用に簡易的に実装
  */
-class SampleScene : public SceneBase
+class IngameScene : public SceneBase
 {
 public:
-	SampleScene();
-	virtual ~SampleScene() {}
+	IngameScene();
+	virtual ~IngameScene() {}
 
 public:
-	//~ Begin CSceneBase interface
+	//~ Begin SceneBase interface
 	virtual void Initialize() override;	
 	virtual SceneType Update(float delta_seconds) override;
 	virtual void Draw() override;
 	virtual void Finalize() override;
-	virtual SceneType GetSceneType() const override { return SceneType::SAMPLE_SCENE; }
+	virtual SceneType GetSceneType() const override { return SceneType::INGAME_SCENE; }
 	//~ End SceneBase interface
+
+private:
+	class Player* player;
 };

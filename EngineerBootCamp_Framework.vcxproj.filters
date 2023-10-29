@@ -10,14 +10,14 @@
     <Filter Include="Source\Utility">
       <UniqueIdentifier>{07a31044-9ea3-4f9b-904f-fcd5bdfd43de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Scene\SampleScene">
-      <UniqueIdentifier>{7c4974fa-b400-4955-8ee8-43c01dd97140}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\GameObject">
       <UniqueIdentifier>{a76aa217-70e0-4b4a-a725-8d1f3938de42}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\GameObject\SampleObject">
       <UniqueIdentifier>{067aa7eb-156d-43ad-85b0-815fca504c68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Scene\IngameScene">
+      <UniqueIdentifier>{7c4974fa-b400-4955-8ee8-43c01dd97140}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,15 +33,16 @@
     <ClCompile Include="Source\Utility\Vector2D.cpp">
       <Filter>Source\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\SampleScene\SampleScene.cpp">
-      <Filter>Source\Scene\SampleScene</Filter>
+    <ClCompile Include="Source\Scene\IngameScene\IngameScene.cpp">
+      <Filter>Source\Scene\IngameScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameObject\GameObject.cpp">
       <Filter>Source\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\SampleObject\SampleObject.cpp">
-      <Filter>Source\GameObject\SampleObject</Filter>
-    </ClCompile>
+    <ClCompile Include="Source\GameObject\Character\Character.cpp" />
+    <ClCompile Include="Source\GameObject\Character\Player\Player.cpp" />
+    <ClCompile Include="Source\Utility\GraphicResourceManager.cpp" />
+    <ClCompile Include="Source\GameObject\BackImage\BackImage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\SystemTypes.h">
@@ -56,14 +57,15 @@
     <ClInclude Include="Source\Utility\Vector2D.h">
       <Filter>Source\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\SampleScene\SampleScene.h">
-      <Filter>Source\Scene\SampleScene</Filter>
+    <ClInclude Include="Source\Scene\IngameScene\IngameScene.h">
+      <Filter>Source\Scene\IngameScene</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameObject\GameObject.h">
       <Filter>Source\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\SampleObject\SampleObject.h">
-      <Filter>Source\GameObject\SampleObject</Filter>
-    </ClInclude>
+    <ClInclude Include="Source\GameObject\Character\Character.h" />
+    <ClInclude Include="Source\GameObject\Character\Player\Player.h" />
+    <ClInclude Include="Source\Utility\GraphicResourceManager.h" />
+    <ClInclude Include="Source\GameObject\BackImage\BackImage.h" />
   </ItemGroup>
 </Project>

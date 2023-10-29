@@ -69,7 +69,7 @@ public:
 	 */
 	void SetDrawSortPriority(int new_priority);
 
-private:
+protected:
 	// オーナーとなるシーン
 	class SceneBase* owner_scene;
 

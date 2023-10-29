@@ -10,7 +10,9 @@
  */
 enum class SceneType : unsigned short
 {
-	SAMPLE_SCENE,
+	TITLE_SCENE,
+	INGAME_SCENE,
+	GAMEOVER_SCENE,
 };
 
 /**
@@ -94,10 +96,13 @@ public:
 	 */
 	void DestroyAllObjects();
 
-private:
+protected:
 	// シーンで生成したオブジェクト
 	std::vector<class GameObject*> objects;
 
-	// スクロール用スクリーンオフセット
+	// スクロール座標の原点
 	Vector2D screen_offset;
+
+	// カメラ座標の原点
+	Vector2D camera_position;
 };

@@ -1,26 +1,27 @@
-#include "SampleObject.h"
+#include "Player.h"
 
 #include "DxLib.h"
 
-SampleObject::SampleObject()
-	: loaded_sprite_handle(0)
+Player::Player()
+	: current_player_state(PlayerState::IDLE)
+	, is_back(false)
 {
 }
 
-SampleObject::~SampleObject()
+Player::~Player()
 {
 	Finalize();
 }
 
-void SampleObject::Initialize()
+void Player::Initialize()
 {
 	__super::Initialize();
 
 	// ‰æ‘œ‚Ì“Ç‚İ‚İ
-	loaded_sprite_handle = LoadGraph(_T("Resources/Images/collon_wait.bmp"));
+	graphic_handle = LoadGraph(_T("Resources/Images/collon_wait.bmp"));
 }
 
-void SampleObject::Update(float delta_seconds)
+void Player::Update(float delta_seconds)
 {
 	__super::Update(delta_seconds);
 
@@ -43,27 +44,28 @@ void SampleObject::Update(float delta_seconds)
 	{
 		input_dir.y = 1;
 	}
-	
+
 	const float MOVEMENT_SPEED = 300.0f;
 	Vector2D delta_position = input_dir.Normalize() * MOVEMENT_SPEED * delta_seconds;
 	SetPosition(GetPosition() + delta_position);
 }
 
-void SampleObject::Draw(const Vector2D& screen_offset)
+void Player::Draw(const Vector2D& screen_offset)
 {
 	__super::Draw(screen_offset);
 
-	// ‰æ‘œ‚Ì•`‰æ
-	int x, y;
+	// ƒXƒNƒŠ[ƒ“À•W‚É•ÏŠ·‚µ‚Ä•`‰æ
+	int x, y, screen_offset_x, screen_offset_y;
 	GetPosition().ToInt(x, y);
-	DrawGraph(x, y, loaded_sprite_handle, true);
+	screen_offset.ToInt(screen_offset_x, screen_offset_y);
+	DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
 }
 
-void SampleObject::Finalize()
+void Player::Finalize()
 {
 	__super::Finalize();
 
 	// ‰æ‘œ‚Ì”jŠü
-	DeleteGraph(loaded_sprite_handle);
-	loaded_sprite_handle = 0;
+	DeleteGraph(graphic_handle);
+	graphic_handle = 0;
 }

@@ -2,15 +2,11 @@
 
 #include "../GameObject.h"
 
-/**
- * サンプルオブジェクト
- * サンプル用に簡易的に実装
- */
-class SampleObject : public GameObject
+class BackImage : public GameObject
 {
 public:
-	SampleObject();
-	virtual ~SampleObject();
+	BackImage();
+	virtual ~BackImage();
 
 public:
 	//~ Begin GameObject interface
@@ -21,5 +17,6 @@ public:
 	//~ End GameObject interface
 
 private:
-	int loaded_sprite_handle;
+	int graphic_handle_scroll;
+
 };

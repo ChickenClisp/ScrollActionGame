@@ -25,6 +25,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	scene_manager->Initialize();
 
 	// メインループ
+	const int refrashtime = 1000 / 60; //　60fpsに固定
 	int prev_frame_time = GetNowCount();
 	while (ProcessMessage() != -1 && CheckHitKey(KEY_INPUT_ESCAPE) != 1)
 	{
@@ -35,6 +36,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// SceneManagerの更新
 		scene_manager->Update(delta_seconds);
+
+		// 1/60秒経つまで待つ
+		if (GetNowCount() - current_frame_time < refrashtime)
+		{
+			Sleep(refrashtime - (GetNowCount() - current_frame_time));
+		}
 	}
 
 	// SceneManagerの破棄
