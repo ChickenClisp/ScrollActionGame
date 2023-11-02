@@ -1,5 +1,6 @@
 #include "BackImage.h"
 #include "../../SystemTypes.h"
+#include "../../Utility/GraphicResourceManager.h"
 #include <DxLib.h>
 
 BackImage::BackImage()
@@ -14,7 +15,9 @@ BackImage::~BackImage()
 void BackImage::Initialize()
 {
 	// âÊëúÇÃì«Ç›çûÇ›
-	graphic_handle_scroll = LoadGraph(_T("Resources/Images/backimage.png"));
+	GraphicResourceManager& graphic_resource_manager = GraphicResourceManager::GetInstance();
+	graphic_handle_scroll = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/backimage.png"));
+	//graphic_handle_scroll = LoadGraph(_T("Resources/Images/backimage.png"));
 }
 
 void BackImage::Update(float delta_seconds)

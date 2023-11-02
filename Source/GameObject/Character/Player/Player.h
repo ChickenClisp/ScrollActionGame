@@ -1,6 +1,14 @@
 #pragma once
 
 #include "../Character.h"
+#include "../Source/Utility/GraphicStructure.h"
+
+#define PLAYER_IDLE   (GraphicStructure{"Resources/Images/collon_wait_a.bmp", 4, 4, 1, 128, 128, 10})
+#define PLAYER_RUN    (GraphicStructure{"Resources/Images/collon_run8.bmp", 8, 4, 2, 128, 128, 5})
+#define PLAYER_JUMP   (GraphicStructure{"Resources/Images/collon_jump.bmp", 6, 4, 2, 128, 128, 10})
+#define PLAYER_ATTACK (GraphicStructure{"Resources/Images/collon_attack.bmp", 3, 3, 1, 128, 128, 15})
+#define PLAYER_DAMAGE (GraphicStructure{"Resources/Images/collon_damage.bmp", 1, 1, 1, 128, 128, 10})
+
 
 enum class PlayerState : unsigned short
 {
@@ -9,7 +17,13 @@ enum class PlayerState : unsigned short
 	JUMP,
 	ATTACK,
 	DAMAGE,
-	DEAD
+	DEAD,
+};
+
+enum class PlayerDirection : unsigned short
+{
+	FRONT,
+	BACK,
 };
 
 class Player : public Character
@@ -27,6 +41,12 @@ public:
 	//~ End GameObject interface
 
 private:
+	void ChangePlayerState(PlayerState new_state);
+	void OnEnterPlayerState(PlayerState state);
+	void OnLeavePlayerState(PlayerState state);
+
+private:
 	PlayerState current_player_state;
-	bool is_back;
+	PlayerDirection current_player_direction;
+	
 };

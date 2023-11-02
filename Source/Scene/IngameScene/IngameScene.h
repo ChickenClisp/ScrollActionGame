@@ -23,4 +23,5 @@ public:
 
 private:
 	class Player* player;
+	int stage_size;
 };

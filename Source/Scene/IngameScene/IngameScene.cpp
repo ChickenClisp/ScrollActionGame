@@ -7,6 +7,7 @@
 
 IngameScene::IngameScene()
 	: player(nullptr)
+	, stage_size(0)
 {
 }
 
@@ -14,6 +15,8 @@ void IngameScene::Initialize()
 {
 	// 親クラスのInitialize()
 	__super::Initialize();
+
+	stage_size = 3000;
 
 	// Playerを生成
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
@@ -33,15 +36,13 @@ SceneType IngameScene::Update(float delta_seconds)
 	{
 		camera_position.x = float(SCREEN_RESOLUTION_X / 2);
 	}
-	if (camera_position.x + float(SCREEN_RESOLUTION_X / 2) >= 3000.0f) // stage_size = 3000.0f
+	if (camera_position.x + float(SCREEN_RESOLUTION_X / 2) >= float(stage_size))
 	{
-		camera_position.x = 2000.0f - float(SCREEN_RESOLUTION_X / 2);
+		camera_position.x = float(stage_size) - float(SCREEN_RESOLUTION_X / 2);
 	}
 
 	// スクロール用変数(x座標)の更新
 	screen_offset.x = camera_position.x - float(SCREEN_RESOLUTION_X / 2);
-	printfDx("player: %f\n", player->GetPosition().x);
-	printfDx("screen: %f\n", screen_offset.x);
 
 	// 親クラスのUpdate()
 	return __super::Update(delta_seconds);

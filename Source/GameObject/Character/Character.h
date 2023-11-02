@@ -1,7 +1,23 @@
 #pragma once
 
 #include "../GameObject.h"
+#include <map>
+#include <vector>
 
+// アニメーション用のenum
+enum class AnimType
+{
+	NO_ANIMATION,
+	IDLE,
+	WALK,
+	BLINK,
+	RUN,
+	JUMP,
+	TO_FALL,
+	FALL,
+	ATTACK,
+	DAMAGED,
+};
 
 class Character : public GameObject
 {
@@ -10,12 +26,27 @@ public:
 	virtual ~Character();
 
 public:
+	//~ Begin GameObject interface
+	virtual void Initialize() override;
+	virtual void Update(float delta_seconds) override;
+	virtual void Draw(const Vector2D& screen_offset) override;
+	virtual void Finalize() override;
+	//~ End GameObject interface
 	void ApplyDamage(int damage);
 
 protected:
 	virtual void OnDamaged(int damage);
+	// animationの画像ハンドル, speedをセットする
+	void ChangeAnimation(AnimType animtype, int animation_speed);
+	void SetFrameZero();
+	
 
 protected:
 	int graphic_handle;
+	std::map<AnimType, std::vector<int>> graphic_handles_map;
+	AnimType animtype;
 	int hp;
+	int animation_frame;
+	int animation_frame_adjust;
+	int animation_speed;
 };

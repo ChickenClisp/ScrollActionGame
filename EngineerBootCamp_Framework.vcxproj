@@ -160,7 +160,11 @@
     <ClInclude Include="Source\Scene\SceneManager.h" />
     <ClInclude Include="Source\SystemTypes.h" />
     <ClInclude Include="Source\Utility\GraphicResourceManager.h" />
+    <ClInclude Include="Source\Utility\GraphicStructure.h" />
     <ClInclude Include="Source\Utility\Vector2D.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\Images\collon_jump.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
