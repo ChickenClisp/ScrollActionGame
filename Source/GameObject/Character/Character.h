@@ -37,8 +37,11 @@ public:
 protected:
 	virtual void OnDamaged(int damage);
 	// animationの画像ハンドル, speedをセットする
-	void ChangeAnimation(AnimType animtype, int animation_speed);
+	void SetAnimation(AnimType new_animtype, int new_animation_speed);
 	void SetFrameZero();
+
+private:
+	void UpdateAnimation();
 	
 
 protected:

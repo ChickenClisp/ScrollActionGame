@@ -148,6 +148,7 @@
     <ClCompile Include="Source\Scene\SceneBase.cpp" />
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
     <ClCompile Include="Source\Utility\GraphicResourceManager.cpp" />
+    <ClCompile Include="Source\Utility\InputManager.cpp" />
     <ClCompile Include="Source\Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +162,7 @@
     <ClInclude Include="Source\SystemTypes.h" />
     <ClInclude Include="Source\Utility\GraphicResourceManager.h" />
     <ClInclude Include="Source\Utility\GraphicStructure.h" />
+    <ClInclude Include="Source\Utility\InputManager.h" />
     <ClInclude Include="Source\Utility\Vector2D.h" />
   </ItemGroup>
   <ItemGroup>

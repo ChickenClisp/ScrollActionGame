@@ -11,7 +11,7 @@ public:
 	virtual ~GraphicResourceManager();
 
 public:
-	// ƒVƒ“ƒOƒ‹ƒgƒ“
+	// Singleton
 	GraphicResourceManager(const GraphicResourceManager&) = delete;
 	GraphicResourceManager& operator = (const GraphicResourceManager&) = delete;
 	GraphicResourceManager(GraphicResourceManager&&) = delete;

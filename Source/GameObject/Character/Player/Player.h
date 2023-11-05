@@ -48,5 +48,5 @@ private:
 private:
 	PlayerState current_player_state;
 	PlayerDirection current_player_direction;
-	
+	Vector2D verocity;
 };
