@@ -2,13 +2,14 @@
 
 #include "DxLib.h"
 #include "../Source/Utility/GraphicResourceManager.h"
-#include "../Source/Utility/InputManager.h"
 #include "../../../SystemTypes.h"
 
 Player::Player()
-	: current_player_state(PlayerState::IDLE)
-	, current_player_direction(PlayerDirection::FRONT)
+	: current_player_state()
+	, current_player_direction()
+	, current_player_isground()
 	, verocity({})
+	, key()
 {
 }
 
@@ -39,19 +40,23 @@ void Player::Initialize()
 	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_damage.bmp"), 1, 1, 1, 128, 128, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::DAMAGED, out_sprite_handles);
 	
-	// PlayerStateの初期化
-	current_player_state = PlayerState::IDLE;
+	// Playerメンバ変数の初期化
+	current_player_state = PlayerState::RUN; // SetAnimation()するために異なるステートを宣言
 	ChangePlayerState(PlayerState::IDLE);
+	current_player_direction = PlayerDirection::FRONT;
+	current_player_isground = PlayerIsGround::OnGround;
 }
 
 void Player::Update(float delta_seconds)
 {
 	__super::Update(delta_seconds);
 	const float MAX_SPEED = 300.0f;
-	InputManager& input_manager = InputManager::GetInstance();
-	
+	const float JUMP_POWER = 1000.0f;
+	const float GRAVITY = 50.0f;
+	UpdateInput();
+
 	// もしAorDが押されていなかったら、速度を下げる
-	if (input_manager.GetKey(KEY_INPUT_A) == false && input_manager.GetKey(KEY_INPUT_D) == false)
+	if (!key[KEY_INPUT_A] && !key[KEY_INPUT_D])
 	{
 		if (verocity.x < 0)
 		{
@@ -68,7 +73,7 @@ void Player::Update(float delta_seconds)
 		}
 	}
 	// もしAが押されていたら、左向きに速度を上げる
-	else if (input_manager.GetKey(KEY_INPUT_A))
+	else if (key[KEY_INPUT_A])
 	{
 		verocity.x -= 10.0f;
 		if (abs(verocity.x) > MAX_SPEED)
@@ -78,7 +83,7 @@ void Player::Update(float delta_seconds)
 		current_player_direction = PlayerDirection::BACK;
 	}
 	// もしDが押されていたら、右向きに速度を上げる
-	else if (input_manager.GetKey(KEY_INPUT_D))
+	else if (key[KEY_INPUT_D])
 	{
 		verocity.x += 10.0f;
 		if (abs(verocity.x) > MAX_SPEED)
@@ -88,13 +93,14 @@ void Player::Update(float delta_seconds)
 		current_player_direction = PlayerDirection::FRONT;
 	}
 	// もしSPACEが押されたら、ジャンプ
-	if (input_manager.GetKeyDown(KEY_INPUT_SPACE))
+	if (key[KEY_INPUT_SPACE]==1 && current_player_isground == PlayerIsGround::OnGround)
 	{
-		verocity.y -= 1000.0f;
+		verocity.y -= JUMP_POWER;
+		current_player_isground = PlayerIsGround::InAir;
 		ChangePlayerState(PlayerState::JUMP);
 	}
 	// もしEが押されてたら、攻撃
-	if (input_manager.GetKeyDown(KEY_INPUT_E))
+	if (key[KEY_INPUT_E] == 1)
 	{
 		ChangePlayerState(PlayerState::ATTACK);
 	}
@@ -130,7 +136,7 @@ void Player::Update(float delta_seconds)
 	}
 
 	// 座標の更新
-	verocity.y += 10.0f;
+	verocity.y += GRAVITY;
 	Vector2D delta_position = verocity * delta_seconds;
 	SetPosition(GetPosition() + delta_position);
 
@@ -138,8 +144,12 @@ void Player::Update(float delta_seconds)
 	if (GetPosition().y > SCREEN_RESOLUTION_Y / 2.0f)
 	{
 		SetPosition(Vector2D(GetPosition().x, SCREEN_RESOLUTION_Y / 2.0f));
+		verocity.y = 0.0f;
+		current_player_isground = PlayerIsGround::OnGround;
 	}
 }
+
+
 
 
 void Player::Draw(const Vector2D& screen_offset)
@@ -214,3 +224,19 @@ void Player::OnLeavePlayerState(PlayerState state)
 {
 }
 
+void Player::UpdateInput()
+{
+	char _key[256];
+	GetHitKeyStateAll(_key);
+	for (int i = 0; i < 256; i++)
+	{
+		if (_key[i] != 0)
+		{
+			key[i]++;
+		}
+		else
+		{
+			key[i] = 0;
+		}
+	}
+}

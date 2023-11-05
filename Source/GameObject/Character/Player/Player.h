@@ -26,6 +26,12 @@ enum class PlayerDirection : unsigned short
 	BACK,
 };
 
+enum class PlayerIsGround : unsigned short
+{
+	OnGround,
+	InAir,
+};
+
 class Player : public Character
 {
 public:
@@ -44,9 +50,12 @@ private:
 	void ChangePlayerState(PlayerState new_state);
 	void OnEnterPlayerState(PlayerState state);
 	void OnLeavePlayerState(PlayerState state);
+	void UpdateInput();
 
 private:
 	PlayerState current_player_state;
 	PlayerDirection current_player_direction;
+	PlayerIsGround current_player_isground;
 	Vector2D verocity;
+	int key[256];
 };

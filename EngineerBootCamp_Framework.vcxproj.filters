@@ -43,7 +43,6 @@
     <ClCompile Include="Source\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Source\Utility\GraphicResourceManager.cpp" />
     <ClCompile Include="Source\GameObject\BackImage\BackImage.cpp" />
-    <ClCompile Include="Source\Utility\InputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\SystemTypes.h">
@@ -69,7 +68,6 @@
     <ClInclude Include="Source\Utility\GraphicResourceManager.h" />
     <ClInclude Include="Source\GameObject\BackImage\BackImage.h" />
     <ClInclude Include="Source\Utility\GraphicStructure.h" />
-    <ClInclude Include="Source\Utility\InputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Resources\Images\collon_jump.bmp" />
