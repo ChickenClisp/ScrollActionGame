@@ -20,8 +20,12 @@ public:
 	virtual void Finalize() override;
 	virtual SceneType GetSceneType() const override { return SceneType::INGAME_SCENE; }
 	//~ End SceneBase interface
+	
+private:
+	void LoadCSV(const std::string& filename, std::vector<std::vector<int>>& stage_data);
 
 private:
 	class Player* player;
+	class Ground* ground;
 	int stage_size;
 };

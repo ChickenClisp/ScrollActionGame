@@ -143,6 +143,7 @@
     <ClCompile Include="Source\GameObject\Character\Character.cpp" />
     <ClCompile Include="Source\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
+    <ClCompile Include="Source\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Scene\IngameScene\IngameScene.cpp" />
     <ClCompile Include="Source\Scene\SceneBase.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Source\GameObject\Character\Character.h" />
     <ClInclude Include="Source\GameObject\Character\Player\Player.h" />
     <ClInclude Include="Source\GameObject\GameObject.h" />
+    <ClInclude Include="Source\GameObject\Ground\Ground.h" />
     <ClInclude Include="Source\Scene\IngameScene\IngameScene.h" />
     <ClInclude Include="Source\Scene\SceneBase.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
