@@ -21,7 +21,7 @@ void IngameScene::Initialize()
 	// 親クラスのInitialize()
 	__super::Initialize();
 
-	stage_size = 3000;
+	stage_size = 3200;
 
 	// Objectを生成
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
@@ -29,7 +29,7 @@ void IngameScene::Initialize()
 	ground = CreateObject<Ground>(Vector2D(0, 0));
 	
 	// マップの読み込み
-	std::vector<std::vector<int>> stage_data = ground->GetGroundData();
+	std::vector<std::vector<int>> stage_data;
 	LoadCSV("Resources/stage1.csv", stage_data);
 	ground->SetGroundData(stage_data);
 }

@@ -51,7 +51,7 @@ void Player::Update(float delta_seconds)
 {
 	__super::Update(delta_seconds);
 	const float MAX_SPEED = 300.0f;
-	const float JUMP_POWER = 1000.0f;
+	const float JUMP_POWER = 800.0f;
 	const float GRAVITY = 50.0f;
 	UpdateInput();
 

@@ -8,13 +8,13 @@
 	マップ：描画されている部分
 	マップチップ：配置するマップチップ画像全体
 */
-#define STAGE_WIDTH 3000                              // ステージの横幅
+#define STAGE_WIDTH 3200                              // ステージの横幅
 #define STAGE_HEIGHT 480                               // ステージの縦幅
 
 #define SIZE_MAP_WIDTH 32                              // マップチップの横幅
 #define SIZE_MAP_HEIGHT 32                             // マップチップの縦幅
 
-#define NUM_MAP_WIDTH 24
+#define NUM_MAP_WIDTH 20
 #define NUM_MAP_HEIGHT 15
 //#define NUM_MAP_WIDTH (STAGE_WIDTH / SIZE_MAP_WIDTH)   // マップの横チップ数
 //#define NUM_MAP_HEIGHT (STAGE_HEIGHT /SIZE_MAP_HEIGHT) // マップの縦チップ数
