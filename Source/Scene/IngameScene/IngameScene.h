@@ -22,10 +22,15 @@ public:
 	//~ End SceneBase interface
 	
 private:
-	void LoadCSV(const std::string& filename, std::vector<std::vector<int>>& stage_data);
+	/**
+	* csvƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+	* @param filename
+	*		 ground_data
+	*/
+	void LoadCSV(const std::string& filename, std::vector<std::vector<int>>& ground_data);
+	
 
 private:
 	class Player* player;
-	class Ground* ground;
 	int stage_size;
 };

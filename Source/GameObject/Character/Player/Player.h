@@ -45,12 +45,13 @@ public:
 	virtual void Draw(const Vector2D& screen_offset) override;
 	virtual void Finalize() override;
 	//~ End GameObject interface
-
+	virtual void OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction) override;
 private:
 	void ChangePlayerState(PlayerState new_state);
 	void OnEnterPlayerState(PlayerState state);
 	void OnLeavePlayerState(PlayerState state);
 	void UpdateInput();
+	void UpdateCollisionParams();
 
 private:
 	PlayerState current_player_state;

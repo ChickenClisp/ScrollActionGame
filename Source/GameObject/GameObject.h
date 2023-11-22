@@ -1,6 +1,9 @@
 #pragma once
 
 #include "../Utility/Vector2D.h"
+#include "../Utility/CollisionParams.h"
+#include "../Utility/HitCollisionDirection.h"
+
 
 /**
  * ゲーム内に表示されるオブジェクトの基底クラス
@@ -12,25 +15,9 @@ public:
 	virtual ~GameObject() {}
 
 public:
-	/**
-	 * 初期化
-	 */
 	virtual void Initialize() {}
-
-	/**
-	 * 更新
-	 * @param	delta_seconds	前フレームとの差分時間(s)
-	 */
 	virtual void Update(float delta_seconds) {}
-
-	/**
-	 * 描画
-	 */
 	virtual void Draw(const Vector2D& screen_offset) {}
-
-	/**
-	 * 解放
-	 */
 	virtual void Finalize() {}
 
 	/**
@@ -69,13 +56,29 @@ public:
 	 */
 	void SetDrawSortPriority(int new_priority);
 
+
+	Vector2D GetPrevPosition() { return prev_position; }
+	Vector2D GetDeltaPosition() { return delta_position; }
+
+	CollisionParams GetCollisionParams() const { return body_collision_params; }
+	void SetCollisionParams(CollisionParams& collision_params);
+	
+	virtual void OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction) {};
+
 protected:
 	// オーナーとなるシーン
 	class SceneBase* owner_scene;
 
 	// 位置
 	Vector2D position;
+	// 1フレーム前の位置
+	Vector2D prev_position;
+	// フレーム間差分
+	Vector2D delta_position;
 
 	// 描画順。数値が小さい順から描画を行う
 	int draw_sort_priority;
+
+	// コリジョンパラメータ
+	CollisionParams  body_collision_params;
 };

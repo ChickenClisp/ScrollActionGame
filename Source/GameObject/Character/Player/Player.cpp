@@ -3,6 +3,7 @@
 #include "DxLib.h"
 #include "../Source/Utility/GraphicResourceManager.h"
 #include "../../../SystemTypes.h"
+#include "../../Ground/Ground.h"
 
 Player::Player()
 	: current_player_state()
@@ -45,15 +46,20 @@ void Player::Initialize()
 	ChangePlayerState(PlayerState::IDLE);
 	current_player_direction = PlayerDirection::FRONT;
 	current_player_isground = PlayerIsGround::OnGround;
+
+	center_dir = { 64, 80 };
+	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{36, 56}, CollisionObjectType::PLAYER , 0, CollisonType::BLOCK };
 }
 
 void Player::Update(float delta_seconds)
 {
 	__super::Update(delta_seconds);
 	const float MAX_SPEED = 300.0f;
-	const float JUMP_POWER = 800.0f;
-	const float GRAVITY = 50.0f;
+	const float JUMP_POWER = 400.0f;
+	const float GRAVITY = 18.0f;
 	UpdateInput();
+
+	prev_position = GetPosition();
 
 	// もしAorDが押されていなかったら、速度を下げる
 	if (!key[KEY_INPUT_A] && !key[KEY_INPUT_D])
@@ -137,16 +143,9 @@ void Player::Update(float delta_seconds)
 
 	// 座標の更新
 	verocity.y += GRAVITY;
-	Vector2D delta_position = verocity * delta_seconds;
-	SetPosition(GetPosition() + delta_position);
-
-	// 以下、当たり判定実装時に削除
-	if (GetPosition().y > SCREEN_RESOLUTION_Y / 2.0f)
-	{
-		SetPosition(Vector2D(GetPosition().x, SCREEN_RESOLUTION_Y / 2.0f));
-		verocity.y = 0.0f;
-		current_player_isground = PlayerIsGround::OnGround;
-	}
+	delta_position = verocity * delta_seconds;
+	SetPosition(prev_position + delta_position);
+	UpdateCollisionParams();
 }
 
 
@@ -164,13 +163,21 @@ void Player::Draw(const Vector2D& screen_offset)
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
 	if (current_player_direction == PlayerDirection::FRONT)
 	{
+		printfDx("x:%d, y:%d\n", x - screen_offset_x, y - screen_offset_y);
 		DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
 	}
 	else
 	{
 		DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
 	}
-	
+	// デバッグ用　コリジョンの表示
+	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 128, y - screen_offset_y + 128, GetColor(0, 0, 255), false);
+	DrawBox(body_collision_params.center_position.x - (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,
+		body_collision_params.center_position.y - (body_collision_params.box_extent.y / 2 - 1) - screen_offset_y,
+		body_collision_params.center_position.x + (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,
+		body_collision_params.center_position.y + (body_collision_params.box_extent.y / 2 - 1) - screen_offset_y,
+		GetColor(0, 255, 0),
+		false);	
 }
 
 void Player::Finalize()
@@ -239,4 +246,43 @@ void Player::UpdateInput()
 			key[i] = 0;
 		}
 	}
+}
+
+void Player::UpdateCollisionParams()
+{
+	// コリジョンパラメータの更新
+	body_collision_params.center_position = GetPosition() + center_dir;
+}
+
+void Player::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction)
+{
+	switch (hit_collsion_direction)
+	{
+	case HitCollisionDirection::BOTTOM:
+		position.y = hit_mapchip_position - (body_collision_params.box_extent.y / 2 - 1) - center_dir.y ;		
+		UpdateCollisionParams();
+		verocity.y = 0.0f;
+		current_player_isground = PlayerIsGround::OnGround;
+		printfDx("bottom ");
+		break;
+	case HitCollisionDirection::TOP:
+		position.y = hit_mapchip_position + SIZE_CHIP_HEIGHT + (body_collision_params.box_extent.y / 2 - 1) - center_dir.y;
+		UpdateCollisionParams();
+		printfDx("top ");
+		break;
+	case HitCollisionDirection::RIGHT:
+		position.x = hit_mapchip_position  - (body_collision_params.box_extent.x / 2 - 1) - center_dir.x;
+		UpdateCollisionParams();
+		printfDx("right ");
+		break;
+	case HitCollisionDirection::LEFT:
+		position.x = hit_mapchip_position + SIZE_CHIP_WIDTH + (body_collision_params.box_extent.x / 2 - 1) - center_dir.x;
+		UpdateCollisionParams();
+		printfDx("left");
+		break;
+	case HitCollisionDirection::NOHIT:
+		break;
+	}
+	printfDx("\n");
+	
 }

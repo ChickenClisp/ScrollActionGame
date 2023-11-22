@@ -11,7 +11,6 @@
 
 IngameScene::IngameScene()
 	: player(nullptr)
-	, ground(nullptr)
 	, stage_size(0)
 {
 }
@@ -21,17 +20,17 @@ void IngameScene::Initialize()
 	// 親クラスのInitialize()
 	__super::Initialize();
 
-	stage_size = 3200;
-
 	// Objectを生成
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
-	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
+	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f + 48));
 	ground = CreateObject<Ground>(Vector2D(0, 0));
-	
+	// 移動するオブジェクトを配列に格納
+	move_objects.push_back(player);
 	// マップの読み込み
 	std::vector<std::vector<int>> stage_data;
 	LoadCSV("Resources/stage1.csv", stage_data);
 	ground->SetGroundData(stage_data);
+	stage_size = (stage_data[0].size()-1) * SIZE_CHIP_WIDTH; // -1の理由：右端の列要素がすべて０のプレイヤー禁止エリアがあるため
 }
 
 SceneType IngameScene::Update(float delta_seconds)
@@ -71,7 +70,7 @@ void IngameScene::Finalize()
 	__super::Finalize();
 }
 
-void IngameScene::LoadCSV(const std::string& filename, std::vector<std::vector<int>>& stage_data)
+void IngameScene::LoadCSV(const std::string& filename, std::vector<std::vector<int>>& ground_data)
 {
 	// ステージ情報をcsvファイルから取得
 	std::ifstream ifs(filename);
@@ -86,10 +85,10 @@ void IngameScene::LoadCSV(const std::string& filename, std::vector<std::vector<i
 			strvec.push_back(field);
 		}
 		// stage_dataにint型で格納
-		stage_data.emplace_back();
+		ground_data.emplace_back();
 		for (int j = 0; j < strvec.size(); j++)
 		{
-			stage_data[i].push_back(std::stoi(strvec.at(j)));
+			ground_data[i].push_back(std::stoi(strvec.at(j)));
 		}
 	}
 }

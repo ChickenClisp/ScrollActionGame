@@ -80,7 +80,7 @@ void Ground::Finalize()
 	__super::Finalize();
 
 	// ‰æ‘œ‚Ì”jŠü
-	for (auto& handle : mapchips_data) {
+	for (auto& handle: mapchips_data) {
 		DeleteGraph(handle);
 	}
 }

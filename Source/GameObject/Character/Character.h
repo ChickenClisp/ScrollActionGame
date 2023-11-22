@@ -52,4 +52,6 @@ protected:
 	int animation_frame;
 	int animation_frame_adjust;
 	int animation_speed;
+
+	Vector2D center_dir;
 };

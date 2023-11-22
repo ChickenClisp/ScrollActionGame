@@ -4,6 +4,7 @@
 #include <string>
 #include "../Utility/Vector2D.h"
 #include "../GameObject/GameObject.h"
+#include "../Utility/HitCollisionDirection.h"
 
 /**
  * シーンタイプ
@@ -14,6 +15,7 @@ enum class SceneType : unsigned short
 	INGAME_SCENE,
 	GAMEOVER_SCENE,
 };
+
 
 /**
  * シーンの基底クラス
@@ -96,13 +98,39 @@ public:
 	 */
 	void DestroyAllObjects();
 
+	/**
+	 * 衝突判定
+	 */
+	void UpdateCheckCollision();
+	/**
+	 * 衝突判定
+	 * @param	target 対象オブジェクト
+	 *			collision_params　自オブジェクトのコリジョンパラメータ
+	 *			hit_collision_params 対象オブジェクトのコリジョンパラメータ
+	 * @return	判定の真偽
+	 */
+	bool CheckCollision(GameObject* target, const CollisionParams& collision_params, CollisionParams& hit_collision_params);
+	
+
+	/**
+	* オブジェクトの位置にmapchipがあるかどうかチェックする
+	* @param position オブジェクトのポジション
+	* @return 判定の真偽
+	*/
+	bool IsHitMapChip(Vector2D position);
+
 protected:
 	// シーンで生成したオブジェクト
 	std::vector<class GameObject*> objects;
+
+	// 移動可能オブジェクト配列
+	std::vector<class GameObject*> move_objects;
 
 	// スクロール座標の原点
 	Vector2D screen_offset;
 
 	// カメラ座標の原点
 	Vector2D camera_position;
+
+	class Ground* ground;
 };

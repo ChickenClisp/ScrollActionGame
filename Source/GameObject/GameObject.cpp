@@ -22,3 +22,8 @@ void GameObject::SetDrawSortPriority(int new_priority)
 {
 	draw_sort_priority = new_priority;
 }
+
+void GameObject::SetCollisionParams(CollisionParams& collision_params)
+{
+	body_collision_params = collision_params;
+}
