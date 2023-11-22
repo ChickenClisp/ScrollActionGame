@@ -7,6 +7,7 @@ SceneBase::SceneBase()
 	, camera_position(Vector2D())
 	, move_objects()
 	, ground(nullptr)
+	, stage_size(0)
 {
 }
 
@@ -90,8 +91,7 @@ void SceneBase::UpdateCheckCollision()
 	{
 		// =====マップチップとの当たり判定=====
 		CollisionParams object_body_collision_params = object->GetCollisionParams();
-		printfDx("x : %f y : %f\n", object_body_collision_params.center_position.x, object_body_collision_params.center_position.y);
-
+		
 		// オブジェクトの矩形4辺のx(y)座標
 		float left = object_body_collision_params.center_position.x - (object_body_collision_params.box_extent.x / 2 - 2);  //　-1だと当たっている判定になるため
 		float right = object_body_collision_params.center_position.x + (object_body_collision_params.box_extent.x / 2 - 2); //　-1だと当たっている判定になるため
@@ -164,8 +164,7 @@ void SceneBase::UpdateCheckCollision()
 		}
 
 		object_body_collision_params = object->GetCollisionParams();
-		printfDx("new x : %f y : %f\n", object_body_collision_params.center_position.x, object_body_collision_params.center_position.y);
-
+		
 		// オブジェクトの矩形4辺のx(y)座標
 		left = object_body_collision_params.center_position.x - (object_body_collision_params.box_extent.x / 2 - 1);
 		right = object_body_collision_params.center_position.x + (object_body_collision_params.box_extent.x / 2 - 1);

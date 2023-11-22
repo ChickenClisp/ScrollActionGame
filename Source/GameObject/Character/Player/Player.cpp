@@ -4,6 +4,7 @@
 #include "../Source/Utility/GraphicResourceManager.h"
 #include "../../../SystemTypes.h"
 #include "../../Ground/Ground.h"
+#include "../Source/Scene/SceneBase.h"
 
 Player::Player()
 	: current_player_state()
@@ -55,8 +56,8 @@ void Player::Update(float delta_seconds)
 {
 	__super::Update(delta_seconds);
 	const float MAX_SPEED = 300.0f;
-	const float JUMP_POWER = 400.0f;
-	const float GRAVITY = 18.0f;
+	const float JUMP_POWER = 800.0f;
+	const float GRAVITY = 50.0f;
 	UpdateInput();
 
 	prev_position = GetPosition();
@@ -141,9 +142,17 @@ void Player::Update(float delta_seconds)
 		break;
 	}
 
-	// 座標の更新
 	verocity.y += GRAVITY;
+
+	// 移動ベクトルを求める	
 	delta_position = verocity * delta_seconds;
+	// 新しいx座標がステージ外であった場合、移動ベクトルを0にする
+	if (prev_position.x + delta_position.x < - (128 - (64 + body_collision_params.box_extent.x / 2)) ||
+		(prev_position.x + delta_position.x) > (owner_scene->stage_size - (128- (64 - body_collision_params.box_extent.x / 2))))
+	{
+		delta_position.x = 0.0f;
+	}
+	// 座標の更新
 	SetPosition(prev_position + delta_position);
 	UpdateCollisionParams();
 }
@@ -163,7 +172,6 @@ void Player::Draw(const Vector2D& screen_offset)
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
 	if (current_player_direction == PlayerDirection::FRONT)
 	{
-		printfDx("x:%d, y:%d\n", x - screen_offset_x, y - screen_offset_y);
 		DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
 	}
 	else
@@ -263,26 +271,21 @@ void Player::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirect
 		UpdateCollisionParams();
 		verocity.y = 0.0f;
 		current_player_isground = PlayerIsGround::OnGround;
-		printfDx("bottom ");
 		break;
 	case HitCollisionDirection::TOP:
 		position.y = hit_mapchip_position + SIZE_CHIP_HEIGHT + (body_collision_params.box_extent.y / 2 - 1) - center_dir.y;
 		UpdateCollisionParams();
-		printfDx("top ");
 		break;
 	case HitCollisionDirection::RIGHT:
 		position.x = hit_mapchip_position  - (body_collision_params.box_extent.x / 2 - 1) - center_dir.x;
 		UpdateCollisionParams();
-		printfDx("right ");
 		break;
 	case HitCollisionDirection::LEFT:
 		position.x = hit_mapchip_position + SIZE_CHIP_WIDTH + (body_collision_params.box_extent.x / 2 - 1) - center_dir.x;
 		UpdateCollisionParams();
-		printfDx("left");
 		break;
 	case HitCollisionDirection::NOHIT:
 		break;
 	}
-	printfDx("\n");
 	
 }

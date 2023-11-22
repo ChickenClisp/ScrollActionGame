@@ -57,6 +57,7 @@ void Ground::Draw(const Vector2D& screen_offset)
 	int draw_start_position_x = std::floor(screen_offset_x / SIZE_CHIP_WIDTH);
 	int draw_start_position_y = std::floor(screen_offset_y / SIZE_CHIP_HEIGHT);
 
+	/*
 	// ground_dataの情報をもとに描画
 	for (int y = 0; y < NUM_MAP_HEIGHT; y++)
 	{
@@ -73,6 +74,24 @@ void Ground::Draw(const Vector2D& screen_offset)
 			DrawGraph(position.x - screen_offset_x, position.y - screen_offset_y, mapchips_data[chip_id], true);
 		}
 	}
+	*/
+	// ground_dataの情報をもとに描画　(右下から左上に)
+	for (int y = NUM_MAP_HEIGHT-1; y > 0; y--)
+	{
+		// y座標の設定
+		int chip_position_y = y + draw_start_position_y;
+		position.y = (float)SIZE_MAP_HEIGHT * chip_position_y;
+		for (int x = NUM_MAP_WIDTH; x > -1; x--)   //1チップ分多く描画することでなめらかに表示できる
+		{
+			// x座標の設定
+			int chip_position_x = x + draw_start_position_x;
+			position.x = (float)SIZE_MAP_WIDTH * chip_position_x;
+			// 描画
+			int chip_id = ground_data[chip_position_y][chip_position_x];
+			DrawGraph(position.x - screen_offset_x, position.y - screen_offset_y, mapchips_data[chip_id], true);
+		}
+	}
+
 }
 
 void Ground::Finalize()

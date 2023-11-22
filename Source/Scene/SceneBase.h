@@ -119,6 +119,9 @@ public:
 	*/
 	bool IsHitMapChip(Vector2D position);
 
+
+public:
+	int stage_size;
 protected:
 	// シーンで生成したオブジェクト
 	std::vector<class GameObject*> objects;

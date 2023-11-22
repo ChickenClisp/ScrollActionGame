@@ -11,7 +11,6 @@
 
 IngameScene::IngameScene()
 	: player(nullptr)
-	, stage_size(0)
 {
 }
 
