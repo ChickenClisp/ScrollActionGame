@@ -121,7 +121,7 @@ public:
 
 
 public:
-	int stage_size;
+	Vector2D stage_size;
 protected:
 	// シーンで生成したオブジェクト
 	std::vector<class GameObject*> objects;

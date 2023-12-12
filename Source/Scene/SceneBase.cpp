@@ -7,7 +7,7 @@ SceneBase::SceneBase()
 	, camera_position(Vector2D())
 	, move_objects()
 	, ground(nullptr)
-	, stage_size(0)
+	, stage_size()
 {
 }
 

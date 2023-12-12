@@ -5,6 +5,7 @@
 #include "../../../SystemTypes.h"
 #include "../../Ground/Ground.h"
 #include "../Source/Scene/SceneBase.h"
+#include "../Source/Scene/IngameScene/IngameScene.h"
 
 Player::Player()
 	: current_player_state()
@@ -26,6 +27,7 @@ void Player::Initialize()
 	// 画像の読み込み
 	GraphicResourceManager& graphic_resource_manager = GraphicResourceManager::GetInstance();
 	std::vector<int> out_sprite_handles;
+	/*
 	// IDLE
 	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_wait_a.bmp"), 4, 4, 1, 128, 128, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::IDLE, out_sprite_handles);
@@ -41,6 +43,24 @@ void Player::Initialize()
 	//DAMAGE
 	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_damage.bmp"), 1, 1, 1, 128, 128, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::DAMAGED, out_sprite_handles);
+	*/
+
+	// IDLE
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Player/player_idle.png"), 4, 4, 1, 50, 50, out_sprite_handles);
+	graphic_handles_map.emplace(AnimType::IDLE, out_sprite_handles);
+	// RUN
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Player/player_run.png"), 6, 6, 1, 50, 50, out_sprite_handles);
+	graphic_handles_map.emplace(AnimType::RUN, out_sprite_handles);
+	// JUMP
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Player/player_jump.png"), 4, 4, 1, 50, 50, out_sprite_handles);
+	graphic_handles_map.emplace(AnimType::JUMP, out_sprite_handles);
+	// ATTACK
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Player/player_attack.png"), 6, 6, 1, 50, 50, out_sprite_handles);
+	graphic_handles_map.emplace(AnimType::ATTACK, out_sprite_handles);
+	//DAMAGE
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_damage.bmp"), 1, 1, 1, 128, 128, out_sprite_handles);
+	graphic_handles_map.emplace(AnimType::DAMAGED, out_sprite_handles);
+
 	
 	// Playerメンバ変数の初期化
 	current_player_state = PlayerState::RUN; // SetAnimation()するために異なるステートを宣言
@@ -48,8 +68,8 @@ void Player::Initialize()
 	current_player_direction = PlayerDirection::FRONT;
 	current_player_isground = PlayerIsGround::OnGround;
 
-	center_dir = { 64, 80 };
-	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{36, 56}, CollisionObjectType::PLAYER , 0, CollisonType::BLOCK };
+	center_dir = { 25, 25 };
+	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{25, 40}, CollisionObjectType::PLAYER , 0, CollisonType::BLOCK };
 }
 
 void Player::Update(float delta_seconds)
@@ -67,14 +87,14 @@ void Player::Update(float delta_seconds)
 	{
 		if (verocity.x < 0)
 		{
-			verocity.x += 20.0f;
+			verocity.x += 30.0f;
 		}
 		else if(verocity.x > 0)
 		{
-			verocity.x -= 20.0f;
+			verocity.x -= 30.0f;
 		}
 
-		if (abs(verocity.x) < 20.0f)
+		if (abs(verocity.x) < 30.0f)
 		{
 			verocity.x = 0.0f;
 		}
@@ -134,6 +154,9 @@ void Player::Update(float delta_seconds)
 		}
 		break;
 	case PlayerState::ATTACK:
+		// ATTACK中は移動量を下げる
+		verocity.x *= 0.80f;
+		if (abs(verocity.x) < 50.0f) verocity.x = 0.0f;
 		// ATTACKのアニメーションが終われば
 		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size()-1)
 		{
@@ -148,7 +171,7 @@ void Player::Update(float delta_seconds)
 	delta_position = verocity * delta_seconds;
 	// 新しいx座標がステージ外であった場合、移動ベクトルを0にする
 	if (prev_position.x + delta_position.x < - (128 - (64 + body_collision_params.box_extent.x / 2)) ||
-		(prev_position.x + delta_position.x) > (owner_scene->stage_size - (128- (64 - body_collision_params.box_extent.x / 2))))
+		(prev_position.x + delta_position.x) > (owner_scene->stage_size.x - (128- (64 - body_collision_params.box_extent.x / 2))))
 	{
 		delta_position.x = 0.0f;
 	}
@@ -179,7 +202,7 @@ void Player::Draw(const Vector2D& screen_offset)
 		DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
 	}
 	// デバッグ用　コリジョンの表示
-	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 128, y - screen_offset_y + 128, GetColor(0, 0, 255), false);
+	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 50, y - screen_offset_y + 50, GetColor(0, 0, 255), false);
 	DrawBox(body_collision_params.center_position.x - (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,
 		body_collision_params.center_position.y - (body_collision_params.box_extent.y / 2 - 1) - screen_offset_y,
 		body_collision_params.center_position.x + (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,

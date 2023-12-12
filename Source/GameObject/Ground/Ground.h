@@ -1,5 +1,6 @@
 #pragma once
 #include "../GameObject.h"
+#include "../Source/Scene/SceneBase.h"
 
 #include <vector>
 
@@ -8,22 +9,8 @@
 	マップ：描画されている部分
 	マップチップ：配置するマップチップ画像全体
 */
-#define STAGE_WIDTH 3200                              // ステージの横幅
-#define STAGE_HEIGHT 480                               // ステージの縦幅
-
-#define SIZE_MAP_WIDTH 32                              // マップチップの横幅
-#define SIZE_MAP_HEIGHT 32                             // マップチップの縦幅
-
-#define NUM_MAP_WIDTH 20
-#define NUM_MAP_HEIGHT 15
-//#define NUM_MAP_WIDTH (STAGE_WIDTH / SIZE_MAP_WIDTH)   // マップの横チップ数
-//#define NUM_MAP_HEIGHT (STAGE_HEIGHT /SIZE_MAP_HEIGHT) // マップの縦チップ数
-
-#define SIZE_CHIP_WIDTH 32                             // マップチップの横幅
-#define SIZE_CHIP_HEIGHT 32							   // マップチップの縦幅
-#define NUM_CHIP_WIDTH 8							   // マップチップの横チップ数
-#define NUM_CHIP_HEIGHT 8							   // マップチップの縦チップ数
-
+#define SIZE_CHIP_WIDTH 24                             // マップチップの横幅
+#define SIZE_CHIP_HEIGHT 24							   // マップチップの縦幅
 
 
 class Ground : public GameObject
@@ -53,4 +40,6 @@ public:
 private:
 	std::vector<std::vector<int>> ground_data;
 	std::vector<int> mapchips_data;
+	int num_screen_width;  // スクリーンの横チップ数
+	int num_screen_height; // スクリーンの縦チップ数
 };

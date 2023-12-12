@@ -4,7 +4,7 @@
 #include <DxLib.h>
 
 BackImage::BackImage()
-	: graphic_handle_scroll(0)
+	: graphic_handle_scroll()
 {
 }
 
@@ -16,7 +16,9 @@ void BackImage::Initialize()
 {
 	// 画像の読み込み
 	GraphicResourceManager& graphic_resource_manager = GraphicResourceManager::GetInstance();
-	graphic_handle_scroll = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/backimage.png"));
+	graphic_handle_scroll[0] = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/BackGround/background_layer_1_720_480.png"));
+	graphic_handle_scroll[1] = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/BackGround/background_layer_2_720_480.png"));
+	graphic_handle_scroll[2] = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/BackGround/background_layer_3_720_480.png"));
 	//graphic_handle_scroll = LoadGraph(_T("Resources/Images/backimage.png"));
 }
 
@@ -35,16 +37,13 @@ void BackImage::Draw(const Vector2D& screen_offset)
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
 
 	int position_integer_per_screensize = screen_offset_x / SCREEN_RESOLUTION_X; // ステージサイズをスクリーンサイズごとに割った配列の要素番号
-	if (position_integer_per_screensize % 2 == 0)
-	{
-		DrawGraph(SCREEN_RESOLUTION_X * position_integer_per_screensize - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll, true);
-		DrawTurnGraph(SCREEN_RESOLUTION_X * (position_integer_per_screensize + 1) - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll, true);
-	}
-	else
-	{
-		DrawTurnGraph(SCREEN_RESOLUTION_X * position_integer_per_screensize - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll, true);
-		DrawGraph(SCREEN_RESOLUTION_X * (position_integer_per_screensize + 1) - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll, true);
-	}
+	
+	DrawGraph(SCREEN_RESOLUTION_X * position_integer_per_screensize - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll[0], true);
+	DrawGraph(SCREEN_RESOLUTION_X * (position_integer_per_screensize + 1) - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll[0], true);
+	DrawGraph(SCREEN_RESOLUTION_X * position_integer_per_screensize - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll[1], true);
+	DrawGraph(SCREEN_RESOLUTION_X * (position_integer_per_screensize + 1) - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll[1], true);
+	DrawGraph(SCREEN_RESOLUTION_X * position_integer_per_screensize - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll[2], true);
+	DrawGraph(SCREEN_RESOLUTION_X * (position_integer_per_screensize + 1) - screen_offset_x, 0 - screen_offset_y, graphic_handle_scroll[2], true);
 }
 
 void BackImage::Finalize()

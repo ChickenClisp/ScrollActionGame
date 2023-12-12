@@ -19,17 +19,20 @@ void IngameScene::Initialize()
 	// 親クラスのInitialize()
 	__super::Initialize();
 
-	// Objectを生成
-	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
-	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f + 48));
-	ground = CreateObject<Ground>(Vector2D(0, 0));
-	// 移動するオブジェクトを配列に格納
-	move_objects.push_back(player);
 	// マップの読み込み
 	std::vector<std::vector<int>> stage_data;
-	LoadCSV("Resources/stage1.csv", stage_data);
+	LoadCSV("Resources/stage2.csv", stage_data);
+	stage_size.x = (stage_data[0].size() - 1) * SIZE_CHIP_WIDTH; // -1の理由：右端の列要素がすべて０のプレイヤー禁止エリアがあるため
+	stage_size.y = stage_data.size() * SIZE_CHIP_HEIGHT;
+
+	// Objectを生成
+	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
+	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
+	ground = CreateObject<Ground>(Vector2D(0, 0));
 	ground->SetGroundData(stage_data);
-	stage_size = (stage_data[0].size()-1) * SIZE_CHIP_WIDTH; // -1の理由：右端の列要素がすべて０のプレイヤー禁止エリアがあるため
+	// 移動するオブジェクトを配列に格納
+	move_objects.push_back(player);
+	
 }
 
 SceneType IngameScene::Update(float delta_seconds)
@@ -44,9 +47,9 @@ SceneType IngameScene::Update(float delta_seconds)
 	{
 		camera_position.x = float(SCREEN_RESOLUTION_X / 2);
 	}
-	if (camera_position.x + float(SCREEN_RESOLUTION_X / 2) >= float(stage_size))
+	if (camera_position.x + float(SCREEN_RESOLUTION_X / 2) >= float(stage_size.x))
 	{
-		camera_position.x = float(stage_size) - float(SCREEN_RESOLUTION_X / 2);
+		camera_position.x = float(stage_size.x) - float(SCREEN_RESOLUTION_X / 2);
 	}
 
 	// スクロール用変数(x座標)の更新

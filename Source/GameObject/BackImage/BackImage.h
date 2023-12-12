@@ -17,6 +17,6 @@ public:
 	//~ End GameObject interface
 
 private:
-	int graphic_handle_scroll;
+	int graphic_handle_scroll[3];
 
 };
