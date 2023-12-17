@@ -32,6 +32,7 @@ void Ground::Initialize()
 
 	std::vector<int> out_sprite_handles;
 	graphic_resource_manager.LoadDivGraphicResource("Resources/Images/oak_woods_tileset.png", 21 * 15, 21, 15, 24, 24, out_sprite_handles);
+	// ###以下はとりあえずで書いたので、あとで編集する###
 	mapchips_data.push_back(out_sprite_handles[22]);
 	mapchips_data.push_back(out_sprite_handles[21]);
 	mapchips_data.push_back(out_sprite_handles[42]);
@@ -83,28 +84,6 @@ void Ground::Initialize()
 	mapchips_data.push_back(out_sprite_handles[4]);
 	mapchips_data.push_back(out_sprite_handles[4]);//50
 
-	/*
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_037.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_038.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_039.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_040.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_041.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_042.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_043.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_044.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_045.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	graphic_handle = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/mapchips/mapchip_000.bmp"));
-	mapchips_data.push_back(graphic_handle);
-	*/
 }
 
 void Ground::Update(float delta_seconds)
@@ -139,24 +118,6 @@ void Ground::Draw(const Vector2D& screen_offset)
 			DrawGraph(position.x - screen_offset_x, position.y - screen_offset_y, mapchips_data[chip_id], true);
 		}
 	}
-	/*
-	// ground_dataの情報をもとに描画　(右下から左上に)
-	for (int y = num_screen_height-1; y > 0; y--)
-	{
-		// y座標の設定
-		int chip_position_y = y + draw_start_position_y;
-		position.y = (float)SIZE_CHIP_HEIGHT * chip_position_y;
-		for (int x = num_screen_width; x > -1; x--)   //1チップ分多く描画することでなめらかに表示できる
-		{
-			// x座標の設定
-			int chip_position_x = x + draw_start_position_x;
-			position.x = (float)SIZE_CHIP_WIDTH * chip_position_x;
-			// 描画
-			int chip_id = ground_data[chip_position_y][chip_position_x];
-			DrawGraph(position.x - screen_offset_x, position.y - screen_offset_y, mapchips_data[chip_id], true);
-		}
-	}
-	*/
 
 }
 
