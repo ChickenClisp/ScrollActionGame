@@ -17,6 +17,7 @@ enum class AnimType
 	FALL,
 	ATTACK,
 	DAMAGED,
+	DEAD,
 };
 
 class Character : public GameObject

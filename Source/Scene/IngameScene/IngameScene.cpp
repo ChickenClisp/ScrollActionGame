@@ -1,6 +1,7 @@
 #include "IngameScene.h"
 #include "../../SystemTypes.h"
 #include "../../GameObject/Character/Player/Player.h"
+#include "../../GameObject/Character/Slime/Slime.h"
 #include "../../GameObject/BackImage/BackImage.h"
 #include "../../GameObject/Ground/Ground.h"
 #include "DxLib.h"
@@ -11,6 +12,7 @@
 
 IngameScene::IngameScene()
 	: player(nullptr)
+	, slime(nullptr)
 {
 }
 
@@ -27,11 +29,13 @@ void IngameScene::Initialize()
 
 	// Objectを生成
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
-	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
+	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 8.0f, SCREEN_RESOLUTION_Y * 3.0f / 4.0f));
+	slime = CreateObject<Slime>(Vector2D(500.0f, 320.0f));
 	ground = CreateObject<Ground>(Vector2D(0, 0));
 	ground->SetGroundData(stage_data);
 	// 移動するオブジェクトを配列に格納
 	move_objects.push_back(player);
+	move_objects.push_back(slime);
 	
 }
 
