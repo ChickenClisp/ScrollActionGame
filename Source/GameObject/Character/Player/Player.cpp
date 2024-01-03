@@ -9,9 +9,6 @@
 
 Player::Player()
 	: current_player_state()
-	, current_player_direction()
-	, current_player_isground()
-	, verocity({})
 	, key()
 {
 }
@@ -65,8 +62,8 @@ void Player::Initialize()
 	// Playerメンバ変数の初期化
 	current_player_state = PlayerState::RUN; // SetAnimation()するために異なるステートを宣言
 	ChangePlayerState(PlayerState::IDLE);
-	current_player_direction = PlayerDirection::FRONT;
-	current_player_isground = PlayerIsGround::OnGround;
+	current_direction = Direction::FRONT;
+	current_isground = IsGround::OnGround;
 
 	center_dir = { 25, 25 };
 	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{25, 40}, CollisionObjectType::PLAYER , 0, CollisonType::BLOCK };
@@ -107,7 +104,7 @@ void Player::Update(float delta_seconds)
 		{
 			verocity.x = -MAX_SPEED;
 		}
-		current_player_direction = PlayerDirection::BACK;
+		current_direction = Direction::BACK;
 	}
 	// もしDが押されていたら、右向きに速度を上げる
 	else if (key[KEY_INPUT_D])
@@ -117,13 +114,13 @@ void Player::Update(float delta_seconds)
 		{
 			verocity.x = MAX_SPEED;
 		}
-		current_player_direction = PlayerDirection::FRONT;
+		current_direction = Direction::FRONT;
 	}
 	// もしSPACEが押されたら、ジャンプ
-	if (key[KEY_INPUT_SPACE]==1 && current_player_isground == PlayerIsGround::OnGround)
+	if (key[KEY_INPUT_SPACE]==1 && current_isground == IsGround::OnGround)
 	{
 		verocity.y -= JUMP_POWER;
-		current_player_isground = PlayerIsGround::InAir;
+		current_isground = IsGround::InAir;
 		ChangePlayerState(PlayerState::JUMP);
 	}
 	// もしEが押されてたら、攻撃
@@ -187,21 +184,11 @@ void Player::Draw(const Vector2D& screen_offset)
 {
 	__super::Draw(screen_offset);
 
-	// 現在のアニメーションを取得
-	graphic_handle = graphic_handles_map[animtype][animation_frame];
-	// スクリーン座標に変換して描画
+
+	// デバッグ用　コリジョンの表示
 	int x, y, screen_offset_x, screen_offset_y;
 	GetPosition().ToInt(x, y);
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
-	if (current_player_direction == PlayerDirection::FRONT)
-	{
-		DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
-	}
-	else
-	{
-		DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
-	}
-	// デバッグ用　コリジョンの表示
 	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 50, y - screen_offset_y + 50, GetColor(0, 0, 255), false);
 	DrawBox(body_collision_params.center_position.x - (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,
 		body_collision_params.center_position.y - (body_collision_params.box_extent.y / 2 - 1) - screen_offset_y,
@@ -293,7 +280,7 @@ void Player::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirect
 		position.y = hit_mapchip_position - (body_collision_params.box_extent.y / 2 - 1) - center_dir.y ;		
 		UpdateCollisionParams();
 		verocity.y = 0.0f;
-		current_player_isground = PlayerIsGround::OnGround;
+		current_isground = IsGround::OnGround;
 		break;
 	case HitCollisionDirection::TOP:
 		position.y = hit_mapchip_position + SIZE_CHIP_HEIGHT + (body_collision_params.box_extent.y / 2 - 1) - center_dir.y;

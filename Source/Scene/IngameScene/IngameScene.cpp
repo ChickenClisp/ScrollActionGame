@@ -1,7 +1,7 @@
 #include "IngameScene.h"
 #include "../../SystemTypes.h"
 #include "../../GameObject/Character/Player/Player.h"
-#include "../../GameObject/Character/Slime/Slime.h"
+#include "../../GameObject/Character/EnemyBase/Slime/Slime.h"
 #include "../../GameObject/BackImage/BackImage.h"
 #include "../../GameObject/Ground/Ground.h"
 #include "DxLib.h"
@@ -61,7 +61,6 @@ SceneType IngameScene::Update(float delta_seconds)
 
 	// 親クラスのUpdate()
 	return __super::Update(delta_seconds);
-
 }
 
 void IngameScene::Draw()
@@ -96,5 +95,33 @@ void IngameScene::LoadCSV(const std::string& filename, std::vector<std::vector<i
 		{
 			ground_data[i].push_back(std::stoi(strvec.at(j)));
 		}
+	}
+}
+
+bool IngameScene::IsFoundPlayer(EnemyBase* enemy_base)
+{
+	// プレイヤーと敵の距離を計算
+	Vector2D distance = Vector2D((player->GetPosition().x - enemy_base->GetPosition().x),
+		(player->GetPosition().y - enemy_base->GetPosition().y));
+	// サーチ範囲内ならばtrue、そうでないならばfalseを返す
+	if (distance.Length() < enemy_base->GetSearchRadius())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+Direction IngameScene::VectorEnemytoPlayer(EnemyBase* enemy_base)
+{
+	Vector2D vec = player->GetPosition() - enemy_base->GetPosition();
+	if (vec.x > 0.0f) {
+		return Direction::BACK;
+	}
+	else 
+	{
+		return Direction::FRONT;
 	}
 }

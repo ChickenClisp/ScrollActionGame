@@ -141,8 +141,9 @@
   <ItemGroup>
     <ClCompile Include="Source\GameObject\BackImage\BackImage.cpp" />
     <ClCompile Include="Source\GameObject\Character\Character.cpp" />
+    <ClCompile Include="Source\GameObject\Character\EnemyBase\EnemyBase.cpp" />
     <ClCompile Include="Source\GameObject\Character\Player\Player.cpp" />
-    <ClCompile Include="Source\GameObject\Character\Slime\Slime.cpp" />
+    <ClCompile Include="Source\GameObject\Character\EnemyBase\Slime\Slime.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Source\Main.cpp" />
@@ -156,8 +157,9 @@
   <ItemGroup>
     <ClInclude Include="Source\GameObject\BackImage\BackImage.h" />
     <ClInclude Include="Source\GameObject\Character\Character.h" />
+    <ClInclude Include="Source\GameObject\Character\EnemyBase\EnemyBase.h" />
     <ClInclude Include="Source\GameObject\Character\Player\Player.h" />
-    <ClInclude Include="Source\GameObject\Character\Slime\Slime.h" />
+    <ClInclude Include="Source\GameObject\Character\EnemyBase\Slime\Slime.h" />
     <ClInclude Include="Source\GameObject\GameObject.h" />
     <ClInclude Include="Source\GameObject\Ground\Ground.h" />
     <ClInclude Include="Source\Scene\IngameScene\IngameScene.h" />

@@ -20,6 +20,18 @@ enum class AnimType
 	DEAD,
 };
 
+enum class Direction : unsigned short
+{
+	FRONT,
+	BACK,
+};
+
+enum class IsGround : unsigned short
+{
+	OnGround,
+	InAir,
+};
+
 class Character : public GameObject
 {
 public:
@@ -38,8 +50,8 @@ public:
 protected:
 	virtual void OnDamaged(int damage);
 	// animationの画像ハンドル, speedをセットする
-	void SetAnimation(AnimType new_animtype, int new_animation_speed);
-	void SetFrameZero();
+	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed);
+	virtual void SetFrameZero();
 
 private:
 	void UpdateAnimation();
@@ -53,6 +65,9 @@ protected:
 	int animation_frame;
 	int animation_frame_adjust;
 	int animation_speed;
-
+	Direction current_direction;
+	IsGround current_isground;
 	Vector2D center_dir;
+
+	Vector2D verocity;
 };

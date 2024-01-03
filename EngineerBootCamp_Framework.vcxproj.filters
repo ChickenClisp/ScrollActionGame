@@ -45,7 +45,8 @@
     <ClCompile Include="Source\GameObject\BackImage\BackImage.cpp" />
     <ClCompile Include="Source\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Source\Utility\CollisionParams.cpp" />
-    <ClCompile Include="Source\GameObject\Character\Slime\Slime.cpp" />
+    <ClCompile Include="Source\GameObject\Character\EnemyBase\Slime\Slime.cpp" />
+    <ClCompile Include="Source\GameObject\Character\EnemyBase\EnemyBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\SystemTypes.h">
@@ -74,7 +75,8 @@
     <ClInclude Include="Source\GameObject\Ground\Ground.h" />
     <ClInclude Include="Source\Utility\CollisionParams.h" />
     <ClInclude Include="Source\Utility\HitCollisionDirection.h" />
-    <ClInclude Include="Source\GameObject\Character\Slime\Slime.h" />
+    <ClInclude Include="Source\GameObject\Character\EnemyBase\Slime\Slime.h" />
+    <ClInclude Include="Source\GameObject\Character\EnemyBase\EnemyBase.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Resources\Images\collon_jump.bmp" />
