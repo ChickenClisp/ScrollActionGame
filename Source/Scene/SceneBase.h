@@ -4,6 +4,7 @@
 #include <string>
 #include "../Utility/Vector2D.h"
 #include "../GameObject/GameObject.h"
+#include "../GameObject/Character/Character.h"
 #include "../Utility/HitCollisionDirection.h"
 
 /**
@@ -109,7 +110,7 @@ public:
 	 *			hit_collision_params 対象オブジェクトのコリジョンパラメータ
 	 * @return	判定の真偽
 	 */
-	bool CheckCollision(GameObject* target, const CollisionParams& collision_params, CollisionParams& hit_collision_params);
+	bool CheckCollision(GameObject* target, const CollisionParams& collision_params, const CollisionParams& hit_collision_params);
 	
 
 	/**

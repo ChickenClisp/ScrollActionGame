@@ -55,7 +55,7 @@ void Player::Initialize()
 	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Player/player_attack.png"), 6, 6, 1, 50, 50, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::ATTACK, out_sprite_handles);
 	//DAMAGE
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_damage.bmp"), 1, 1, 1, 128, 128, out_sprite_handles);
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Player/player_hurt.png"), 3, 3, 1, 50, 50, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::DAMAGED, out_sprite_handles);
 
 	
@@ -67,6 +67,8 @@ void Player::Initialize()
 
 	center_dir = { 25, 25 };
 	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{25, 40}, CollisionObjectType::PLAYER , 0, CollisonType::BLOCK };
+	hp = 5;
+	attack_power = 1;
 }
 
 void Player::Update(float delta_seconds)
@@ -160,6 +162,13 @@ void Player::Update(float delta_seconds)
 			ChangePlayerState(PlayerState::IDLE);
 		}
 		break;
+	case PlayerState::DAMAGE:
+		// DAMAGEのアニメーションが終われば
+		if (animation_frame == graphic_handles_map[AnimType::DAMAGED].size() - 1)
+		{
+			ChangePlayerState(PlayerState::IDLE);
+		}
+		break;
 	}
 
 	verocity.y += GRAVITY;
@@ -178,17 +187,44 @@ void Player::Update(float delta_seconds)
 }
 
 
-
-
 void Player::Draw(const Vector2D& screen_offset)
 {
 	__super::Draw(screen_offset);
-
-
-	// デバッグ用　コリジョンの表示
+	// 現在のアニメーションを取得
+	graphic_handle = graphic_handles_map[animtype][animation_frame];
+	// スクリーン座標に変換して描画
 	int x, y, screen_offset_x, screen_offset_y;
 	GetPosition().ToInt(x, y);
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
+	if (current_direction == Direction::FRONT)
+	{
+		if (is_invincible == true)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+			DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+		}
+		else
+		{
+			DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+		}
+	}
+	else
+	{
+		if (is_invincible == true)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+			DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+		}
+		else
+		{
+			DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+		}
+		
+	}
+
+	// デバッグ用　コリジョンの表示
 	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 50, y - screen_offset_y + 50, GetColor(0, 0, 255), false);
 	DrawBox(body_collision_params.center_position.x - (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,
 		body_collision_params.center_position.y - (body_collision_params.box_extent.y / 2 - 1) - screen_offset_y,
@@ -237,7 +273,7 @@ void Player::OnEnterPlayerState(PlayerState state)
 		SetAnimation(AnimType::ATTACK, 5);
 		break;
 	case PlayerState::DAMAGE:
-		SetAnimation(AnimType::DAMAGED, 10);
+		SetAnimation(AnimType::DAMAGED, 4);
 		break;
 	case PlayerState::DEAD:
 		break;
@@ -297,5 +333,12 @@ void Player::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirect
 	case HitCollisionDirection::NOHIT:
 		break;
 	}
-	
+}
+
+void Player::OnHitObject()
+{
+	// 少しの時間だけ無敵
+	SetInvincibleMode(true);
+	// ダメージステートに変更
+	ChangePlayerState(PlayerState::DAMAGE);
 }

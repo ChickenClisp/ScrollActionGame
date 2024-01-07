@@ -33,6 +33,20 @@ void EnemyBase::Update(float delta_seconds)
 void EnemyBase::Draw(const Vector2D& screen_offset)
 {
 	__super::Draw(screen_offset);
+	// 現在のアニメーションを取得
+	graphic_handle = graphic_handles_map[animtype][animation_frame];
+	// スクリーン座標に変換して描画
+	int x, y, screen_offset_x, screen_offset_y;
+	GetPosition().ToInt(x, y);
+	screen_offset.ToInt(screen_offset_x, screen_offset_y);
+	if (current_direction == Direction::FRONT)
+	{
+		DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+	}
+	else
+	{
+		DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+	}
 }
 
 void EnemyBase::Finalize()

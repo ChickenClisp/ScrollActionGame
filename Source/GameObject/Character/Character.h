@@ -45,10 +45,12 @@ public:
 	virtual void Draw(const Vector2D& screen_offset) override;
 	virtual void Finalize() override;
 	//~ End GameObject interface
-	void ApplyDamage(int damage);
+	void ApplyDamage(int damage, Character* damaged_character);
+	int GetAttackPower() { return attack_power; }
 
 protected:
 	virtual void OnDamaged(int damage);
+	virtual void OnDead();
 	// animationの画像ハンドル, speedをセットする
 	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed);
 	virtual void SetFrameZero();
@@ -62,6 +64,7 @@ protected:
 	std::map<AnimType, std::vector<int>> graphic_handles_map;
 	AnimType animtype;
 	int hp;
+	int attack_power;
 	int animation_frame;
 	int animation_frame_adjust;
 	int animation_speed;

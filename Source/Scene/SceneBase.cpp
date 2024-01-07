@@ -61,16 +61,26 @@ void SceneBase::DestroyObject(GameObject* object)
 			break;
 		}
 	}
-
 	// 見つからなかった場合は抜ける
 	if (iterator == objects.end())
 	{
 		return;
 	}
 
+	// 移動可能オブジェクトに関しても同様に
+	auto jterator = move_objects.begin();
+	for (; jterator != move_objects.end(); ++jterator)
+	{
+		if ((*jterator) == object)
+		{
+			break;
+		}
+	}
+
 	// 削除
 	(*iterator)->Finalize();
 	objects.erase(iterator);
+	move_objects.erase(jterator);
 	delete object;
 }
 
@@ -89,6 +99,29 @@ void SceneBase::UpdateCheckCollision()
 	// 移動可能オブジェクトの当たり判定を行う
 	for (auto object : move_objects)
 	{
+		// =====オブジェクト同士の当たり判定=====
+		for (auto opponent_object : move_objects)
+		{
+			if (object == opponent_object)
+			{
+				continue;
+			}
+			// 当たり判定
+			if (CheckCollision(object, object->GetCollisionParams(), opponent_object->GetCollisionParams()))
+			{
+				// プレイヤーと敵が衝突していた場合、ダメージを与える
+				if (object->GetCollisionParams().collision_object_type == CollisionObjectType::PLAYER
+					&& opponent_object->GetCollisionParams().collision_object_type == CollisionObjectType::ENEMY)
+				{
+					Character* character = dynamic_cast<Character*>(object);
+					Character* opponent_character = dynamic_cast<Character*>(opponent_object);
+					opponent_character->ApplyDamage(opponent_character->GetAttackPower(), character);
+				}
+				object->OnHitObject();
+				printfDx("a");
+			}
+		}
+
 		// =====マップチップとの当たり判定=====
 		CollisionParams object_body_collision_params = object->GetCollisionParams();
 		
@@ -159,6 +192,7 @@ void SceneBase::UpdateCheckCollision()
 						}
 					}
 				}
+				// 押し戻し
 				object->OnHitGroundCollision(y * SIZE_CHIP_HEIGHT, hit_collision_direction);
 			}
 		}
@@ -221,6 +255,7 @@ void SceneBase::UpdateCheckCollision()
 						}
 					}
 				}
+				// 押し戻し
 				object->OnHitGroundCollision(x * SIZE_CHIP_WIDTH, hit_collision_direction);
 			}
 		}
@@ -279,11 +314,9 @@ void SceneBase::UpdateCheckCollision()
 }
 
 
-
-
-bool SceneBase::CheckCollision(GameObject* target, const CollisionParams& collision_params, CollisionParams& hit_collision_params)
+bool SceneBase::CheckCollision(GameObject* target, const CollisionParams& collision_params, const CollisionParams& hit_collision_params)
 {
-	collision_params.collision_object_type; // GROUND = 1, PLAYER = 2
+	collision_params.collision_object_type; // GROUND = 1, PLAYER = 2, ENEMY = 4
 	collision_params.hit_object_types; // bit演算
 	collision_params.collision_type; // BLOCK or OVERLAP
 

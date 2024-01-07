@@ -46,7 +46,9 @@ void Slime::Initialize()
 
 	center_dir = { 16, 16 };
 	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{32, 32}, CollisionObjectType::ENEMY , 0, CollisonType::BLOCK };
-	search_radius = 35.0f;
+	search_radius = 40.0f;
+	hp = 1;
+	attack_power = 1;
 }
 
 void Slime::Update(float delta_seconds)
@@ -71,6 +73,15 @@ void Slime::Update(float delta_seconds)
 	IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
 	if (in_game_scene->IsFoundPlayer(this))
 	{
+		// 前進して攻撃する
+		if (current_direction == Direction::FRONT)
+		{
+			verocity.x -= 20.0f;
+		}
+		else
+		{
+			verocity.x += 20.0f;
+		}
 		ChangeEnemyState(EnemyState::ATTACK);
 		current_direction = in_game_scene->VectorEnemytoPlayer(this);
 	}
@@ -90,7 +101,6 @@ void Slime::Update(float delta_seconds)
 		}
 		break;
 	case EnemyState::ATTACK:
-		verocity.x = 0.0f;
 		// ATTACKのアニメーションが終われば
 		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size() - 1)
 		{

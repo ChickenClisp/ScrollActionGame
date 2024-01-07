@@ -101,8 +101,8 @@ void IngameScene::LoadCSV(const std::string& filename, std::vector<std::vector<i
 bool IngameScene::IsFoundPlayer(EnemyBase* enemy_base)
 {
 	// プレイヤーと敵の距離を計算
-	Vector2D distance = Vector2D((player->GetPosition().x - enemy_base->GetPosition().x),
-		(player->GetPosition().y - enemy_base->GetPosition().y));
+	Vector2D distance = Vector2D((player->GetCollisionParams().center_position.x - enemy_base->GetCollisionParams().center_position.x),
+		(player->GetCollisionParams().center_position.y - enemy_base->GetCollisionParams().center_position.y));
 	// サーチ範囲内ならばtrue、そうでないならばfalseを返す
 	if (distance.Length() < enemy_base->GetSearchRadius())
 	{
@@ -123,5 +123,13 @@ Direction IngameScene::VectorEnemytoPlayer(EnemyBase* enemy_base)
 	else 
 	{
 		return Direction::FRONT;
+	}
+}
+
+void IngameScene::AttackEvent(Character* character1, Character* character2)
+{
+	if (character1 != nullptr && character2 != nullptr)
+	{
+		character1->ApplyDamage(character1->GetAttackPower(), character2);
 	}
 }

@@ -56,14 +56,23 @@ public:
 	 */
 	void SetDrawSortPriority(int new_priority);
 
+	/**
+	 * マップチップとの衝突イベント(押し戻し)
+	 * @param hit_mapchip_position   衝突したマップチップの位置
+	 *		  hit_collsion_direction 衝突した面
+	 */
+	virtual void OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction) {}
+
+	/**
+	 * オブジェクトとの衝突イベント
+	 */
+	virtual void OnHitObject() {}
 
 	Vector2D GetPrevPosition() { return prev_position; }
 	Vector2D GetDeltaPosition() { return delta_position; }
 
 	CollisionParams GetCollisionParams() const { return body_collision_params; }
 	void SetCollisionParams(CollisionParams& collision_params);
-	
-	virtual void OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction) {};
 
 protected:
 	// オーナーとなるシーン

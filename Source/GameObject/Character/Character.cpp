@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "../../Scene/SceneBase.h"
 #include "DxLib.h"
 #include <cmath>
 
@@ -7,6 +8,7 @@ Character::Character()
 	, graphic_handles_map({})
 	, animtype(AnimType::IDLE)
 	, hp(0)
+	, attack_power(0)
 	, animation_frame(0)
 	, animation_frame_adjust(0)
 	, animation_speed(1) // animation_frame_adjustより大きくして,起動時にUpdateAnimationのif文がfalseになるようにする
@@ -47,20 +49,6 @@ void Character::UpdateAnimation()
 void Character::Draw(const Vector2D& screen_offset)
 {
 	__super::Draw(screen_offset);
-	// 現在のアニメーションを取得
-	graphic_handle = graphic_handles_map[animtype][animation_frame];
-	// スクリーン座標に変換して描画
-	int x, y, screen_offset_x, screen_offset_y;
-	GetPosition().ToInt(x, y);
-	screen_offset.ToInt(screen_offset_x, screen_offset_y);
-	if (current_direction == Direction::FRONT)
-	{
-		DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
-	}
-	else
-	{
-		DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
-	}
 }
 
 void Character::Finalize()
@@ -68,14 +56,27 @@ void Character::Finalize()
 	__super::Finalize();
 }
 
-void Character::ApplyDamage(int damage)
+void Character::ApplyDamage(int damage, Character* damaged_character)
 {
+	damaged_character->OnDamaged(damage);
 }
 
 void Character::OnDamaged(int damage)
 {
+	this->hp -= damage;
+	printfDx("%d\n", hp);
+	// 死亡判定
+	if (hp <= 0)
+	{
+		OnDead();
+	}
 }
 
+void Character::OnDead()
+{
+	printfDx("OnDead\n");
+	// owner_scene->DestroyObject(this);
+}
 
 
 void Character::SetAnimation(AnimType new_animtype, int new_animation_speed)
