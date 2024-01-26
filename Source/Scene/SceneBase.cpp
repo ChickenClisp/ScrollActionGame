@@ -109,6 +109,7 @@ void SceneBase::UpdateCheckCollision()
 			// 当たり判定
 			if (CheckCollision(object, object->GetCollisionParams(), opponent_object->GetCollisionParams()))
 			{
+				/*
 				// プレイヤーと敵が衝突していた場合、ダメージを与える
 				if (object->GetCollisionParams().collision_object_type == CollisionObjectType::PLAYER
 					&& opponent_object->GetCollisionParams().collision_object_type == CollisionObjectType::ENEMY)
@@ -117,8 +118,8 @@ void SceneBase::UpdateCheckCollision()
 					Character* opponent_character = dynamic_cast<Character*>(opponent_object);
 					opponent_character->ApplyDamage(opponent_character->GetAttackPower(), character);
 				}
+				*/
 				object->OnHitObject();
-				printfDx("a");
 			}
 		}
 
@@ -324,7 +325,7 @@ bool SceneBase::CheckCollision(GameObject* target, const CollisionParams& collis
 	float distance_x = abs(collision_params.center_position.x - hit_collision_params.center_position.x);
 	float distance_y = abs(collision_params.center_position.y - hit_collision_params.center_position.y);
 
-	// 2つの矩形のx軸, y軸のサイズの和を算出
+	// 2つの矩形のx軸, y軸のサイズの和/2を算出
 	float size_x = (collision_params.box_extent.x + hit_collision_params.box_extent.x) / 2;
 	float size_y = (collision_params.box_extent.y + hit_collision_params.box_extent.y) / 2;
 

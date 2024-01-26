@@ -35,15 +35,21 @@ public:
 	//~ End GameObject interface
 	virtual void OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction) override;
 	virtual void OnHitObject()override;
-	void SetInvincibleMode(bool b_invincible) { is_invincible = b_invincible; }
+	bool GetInvincibleMode() { return is_invincible; }
+	void SetInvincibleMode(bool b_invincible, float timer) { is_invincible = b_invincible; invincible_timer = timer;}
+protected:
+	virtual void OnDamaged(int damage) override;
+
 private:
 	void ChangePlayerState(PlayerState new_state);
 	void OnEnterPlayerState(PlayerState state);
 	void OnLeavePlayerState(PlayerState state);
 	void UpdateInput();
+	void UpdateInvincibleTimer();
 	void UpdateCollisionParams();
 private:
 	PlayerState current_player_state;
-	bool is_invincible;
+	bool is_invincible;               // ñ≥ìGÉÇÅ[Éh
+	float invincible_timer;           // ñ≥ìGéûä‘
 	int key[256];
 };

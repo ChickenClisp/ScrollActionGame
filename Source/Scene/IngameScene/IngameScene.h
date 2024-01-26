@@ -32,11 +32,15 @@ public:
 	 */
 	Direction VectorEnemytoPlayer(EnemyBase* enemy_base);
 	/**
-	 * 攻撃イベント
-	 * @param character1 攻撃するキャラ
-	 *        character2 ダメージを受けるキャラ
+	 * プレイヤーの攻撃イベント
+	 * @param enemy_base
 	 */
-	void AttackEvent(Character* character1, Character* character2);
+	void PlayertoEnemyAttackEvent(EnemyBase* enemy_base);
+	/**
+	 * 敵の攻撃イベント
+	 * @param enemy_base
+	 */
+	void EnemytoPlayerAttackEvent(EnemyBase* enemy_base);
 private:
 	/**
 	* csvファイルの読み込み

@@ -63,7 +63,7 @@ void Character::ApplyDamage(int damage, Character* damaged_character)
 
 void Character::OnDamaged(int damage)
 {
-	this->hp -= damage;
+	hp -= damage;
 	printfDx("%d\n", hp);
 	// Ž€–S”»’è
 	if (hp <= 0)

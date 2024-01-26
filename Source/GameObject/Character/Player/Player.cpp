@@ -9,6 +9,8 @@
 
 Player::Player()
 	: current_player_state()
+	, is_invincible()
+	, invincible_timer()
 	, key()
 {
 }
@@ -78,6 +80,7 @@ void Player::Update(float delta_seconds)
 	const float JUMP_POWER = 800.0f;
 	const float GRAVITY = 50.0f;
 	UpdateInput();
+	UpdateInvincibleTimer();
 
 	prev_position = GetPosition();
 
@@ -302,6 +305,17 @@ void Player::UpdateInput()
 	}
 }
 
+void Player::UpdateInvincibleTimer()
+{
+	// 無敵モードならタイマーを動かす。0になったら無敵モードを解除
+	if (is_invincible) {
+		invincible_timer--;
+		if (invincible_timer <= 0) {
+			is_invincible = false;
+		}
+	}
+}
+
 void Player::UpdateCollisionParams()
 {
 	// コリジョンパラメータの更新
@@ -337,8 +351,27 @@ void Player::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirect
 
 void Player::OnHitObject()
 {
+	/*
+	const float INVINCIBLE_TIMER = 60.0f; // 無敵時間
 	// 少しの時間だけ無敵
-	SetInvincibleMode(true);
+	SetInvincibleMode(true, INVINCIBLE_TIMER);
 	// ダメージステートに変更
 	ChangePlayerState(PlayerState::DAMAGE);
+	*/
+}
+
+void Player::OnDamaged(int damage)
+{
+	__super::OnDamaged(damage);
+	const float INVINCIBLE_TIMER = 60.0f; // 無敵時間
+	const float NOCKBACK_DELTA_POSITION = 20.0f; // ノックバックで動く距離
+	// 少しの時間だけ無敵
+	SetInvincibleMode(true, INVINCIBLE_TIMER);
+	// ダメージステートに変更
+	ChangePlayerState(PlayerState::DAMAGE);
+
+	// ノックバック
+	position.x -= NOCKBACK_DELTA_POSITION;
+	delta_position.x -= NOCKBACK_DELTA_POSITION;
+	UpdateCollisionParams();
 }

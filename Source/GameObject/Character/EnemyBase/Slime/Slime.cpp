@@ -39,14 +39,14 @@ void Slime::Initialize()
 
 
 	// メンバ変数の初期化
-	current_enemy_state = EnemyState::RUN; // SetAnimation()するために異なるステートを宣言
-	ChangeEnemyState(EnemyState::IDLE);
+	current_enemy_state = EnemyState::IDLE; // SetAnimation()するために異なるステートを宣言
+	ChangeEnemyState(EnemyState::RUN);
 	current_direction = Direction::FRONT;
 	current_isground = IsGround::OnGround;
 
 	center_dir = { 16, 16 };
 	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{32, 32}, CollisionObjectType::ENEMY , 0, CollisonType::BLOCK };
-	search_radius = 40.0f;
+	search_radius = 30.0f;
 	hp = 1;
 	attack_power = 1;
 }
@@ -56,34 +56,37 @@ void Slime::Update(float delta_seconds)
 	__super::Update(delta_seconds);
 	const float MAX_SPEED = 300.0f;
 	const float GRAVITY = 50.0f;
+	
 
 	prev_position = GetPosition();
 
-
-	if (current_direction == Direction::FRONT)
+	if (current_enemy_state == EnemyState::RUN)
 	{
-		verocity.x = -30.0f;
-	}
-	else if (current_direction == Direction::BACK)
-	{
-		verocity.x = 30.0f;
+		if (current_direction == Direction::FRONT)
+		{
+			verocity.x = -30.0f;
+		}
+		else if (current_direction == Direction::BACK)
+		{
+			verocity.x = 30.0f;
+		}
 	}
 
 	// もしPlayerが索敵範囲内にいたら、攻撃する
 	IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
 	if (in_game_scene->IsFoundPlayer(this))
 	{
-		// 前進して攻撃する
-		if (current_direction == Direction::FRONT)
-		{
-			verocity.x -= 20.0f;
-		}
-		else
-		{
-			verocity.x += 20.0f;
-		}
-		ChangeEnemyState(EnemyState::ATTACK);
+		// プレイヤーの方を向いて攻撃
+		verocity.x = 0.0f;
 		current_direction = in_game_scene->VectorEnemytoPlayer(this);
+		ChangeEnemyState(EnemyState::ATTACK);
+
+		// 攻撃アニメーションのフレームに応じてAttackEventを起こす
+		const int ATTACK_FRAME = 2;
+		if (animation_frame == ATTACK_FRAME)
+		{
+			in_game_scene->EnemytoPlayerAttackEvent(this);
+		}
 	}
 
 	// SlimeStateの遷移条件
@@ -123,9 +126,6 @@ void Slime::Update(float delta_seconds)
 	SetPosition(prev_position + delta_position);
 	UpdateCollisionParams();
 }
-
-
-
 
 void Slime::Draw(const Vector2D& screen_offset)
 {
