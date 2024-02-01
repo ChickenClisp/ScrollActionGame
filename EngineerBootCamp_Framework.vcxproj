@@ -146,6 +146,7 @@
     <ClCompile Include="Source\GameObject\Character\EnemyBase\Slime\Slime.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\GameObject\Ground\Ground.cpp" />
+    <ClCompile Include="Source\GameObject\Sword\Sword.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Scene\IngameScene\IngameScene.cpp" />
     <ClCompile Include="Source\Scene\SceneBase.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Source\GameObject\Character\EnemyBase\Slime\Slime.h" />
     <ClInclude Include="Source\GameObject\GameObject.h" />
     <ClInclude Include="Source\GameObject\Ground\Ground.h" />
+    <ClInclude Include="Source\GameObject\Sword\Sword.h" />
     <ClInclude Include="Source\Scene\IngameScene\IngameScene.h" />
     <ClInclude Include="Source\Scene\SceneBase.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />

@@ -25,7 +25,8 @@ public:
 	virtual void Finalize() override;
 	//~ End GameObject interface
 	virtual void OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction) override;
-	float GetSearchRadius() { return search_radius;}
+	virtual void OnHitObject(class GameObject* opponent_gameobject)override;
+	float GetSearchRadius() const { return search_radius;}
 protected:
 	void ChangeEnemyState(EnemyState new_state);
 	virtual void OnEnterEnemyState(EnemyState state);

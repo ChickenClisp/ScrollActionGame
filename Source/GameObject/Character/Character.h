@@ -46,11 +46,11 @@ public:
 	virtual void Finalize() override;
 	//~ End GameObject interface
 	void ApplyDamage(int damage, Character* damaged_character);
-	int GetAttackPower() { return attack_power; }
+	int GetAttackPower() const { return attack_power; }
 
 protected:
-	virtual void OnDamaged(int damage);
-	virtual void OnDead();
+	virtual void OnDamaged(int damage, class Character* damaged_character);
+	virtual void OnDead(class Character* died_character);
 	// animationの画像ハンドル, speedをセットする
 	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed);
 	virtual void SetFrameZero();
@@ -70,7 +70,6 @@ protected:
 	int animation_speed;
 	Direction current_direction;
 	IsGround current_isground;
-	Vector2D center_dir;
 
 	Vector2D verocity;
 };

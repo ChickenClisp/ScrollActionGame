@@ -96,12 +96,14 @@ void SceneBase::DestroyAllObjects()
 
 void SceneBase::UpdateCheckCollision()
 {
+	// =====オブジェクト同士の当たり判定=====
 	// 移動可能オブジェクトの当たり判定を行う
 	for (auto object : move_objects)
 	{
-		// =====オブジェクト同士の当たり判定=====
+		
 		for (auto opponent_object : move_objects)
 		{
+			// 自分自身の場合は無視
 			if (object == opponent_object)
 			{
 				continue;
@@ -119,13 +121,22 @@ void SceneBase::UpdateCheckCollision()
 					opponent_character->ApplyDamage(opponent_character->GetAttackPower(), character);
 				}
 				*/
-				object->OnHitObject();
+				object->OnHitObject(opponent_object);
 			}
 		}
-
-		// =====マップチップとの当たり判定=====
+	}
+	// =====マップチップとの当たり判定=====
+	// 移動可能オブジェクトの当たり判定を行う
+	for (auto object : move_objects)
+	{
+		// //コリジョンパラメータの取得
 		CollisionParams object_body_collision_params = object->GetCollisionParams();
-		
+		// swordの場合は無視
+		if (object_body_collision_params.collision_object_type == CollisionObjectType::SWORD)
+		{
+			continue;
+		}
+
 		// オブジェクトの矩形4辺のx(y)座標
 		float left = object_body_collision_params.center_position.x - (object_body_collision_params.box_extent.x / 2 - 2);  //　-1だと当たっている判定になるため
 		float right = object_body_collision_params.center_position.x + (object_body_collision_params.box_extent.x / 2 - 2); //　-1だと当たっている判定になるため

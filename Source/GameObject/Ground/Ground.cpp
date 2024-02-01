@@ -27,7 +27,6 @@ void Ground::Initialize()
 
 	// 画像の読み込み
 	GraphicResourceManager& graphic_resource_manager = GraphicResourceManager::GetInstance();
-	int graphic_handle;
 	mapchips_data.push_back(0); // csvファイルで0はnullを表すため
 
 	std::vector<int> out_sprite_handles;

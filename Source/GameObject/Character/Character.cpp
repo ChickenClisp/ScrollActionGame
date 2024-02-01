@@ -58,24 +58,24 @@ void Character::Finalize()
 
 void Character::ApplyDamage(int damage, Character* damaged_character)
 {
-	damaged_character->OnDamaged(damage);
+	damaged_character->OnDamaged(damage, damaged_character);
 }
 
-void Character::OnDamaged(int damage)
+void Character::OnDamaged(int damage, class Character* damaged_character)
 {
 	hp -= damage;
 	printfDx("%d\n", hp);
 	// Ž€–S”»’è
 	if (hp <= 0)
 	{
-		OnDead();
+		OnDead(damaged_character);
 	}
 }
 
-void Character::OnDead()
+void Character::OnDead(class Character* died_character)
 {
 	printfDx("OnDead\n");
-	// owner_scene->DestroyObject(this);
+	owner_scene->DestroyObject(died_character);
 }
 
 

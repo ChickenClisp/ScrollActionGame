@@ -53,5 +53,4 @@ private:
 
 private:
 	class Player* player;
-	class Slime* slime;
 };

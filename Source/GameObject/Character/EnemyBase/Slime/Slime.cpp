@@ -47,7 +47,7 @@ void Slime::Initialize()
 	center_dir = { 16, 16 };
 	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{32, 32}, CollisionObjectType::ENEMY , 0, CollisonType::BLOCK };
 	search_radius = 30.0f;
-	hp = 1;
+	hp = 3;
 	attack_power = 1;
 }
 

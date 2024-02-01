@@ -9,6 +9,7 @@
 
 Player::Player()
 	: current_player_state()
+	, equipped_sword(nullptr)
 	, is_invincible()
 	, invincible_timer()
 	, key()
@@ -67,9 +68,9 @@ void Player::Initialize()
 	current_direction = Direction::FRONT;
 	current_isground = IsGround::OnGround;
 
-	center_dir = { 25, 25 };
+	center_dir = Vector2D(25.0f, 25.0f);
 	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{25, 40}, CollisionObjectType::PLAYER , 0, CollisonType::BLOCK };
-	hp = 5;
+	hp = 10;
 	attack_power = 1;
 }
 
@@ -186,7 +187,7 @@ void Player::Update(float delta_seconds)
 	}
 	// 座標の更新
 	SetPosition(prev_position + delta_position);
-	UpdateCollisionParams();
+	UpdateCollisionParamsCenterPosition(this);
 }
 
 
@@ -259,33 +260,55 @@ void Player::ChangePlayerState(PlayerState new_state)
 
 void Player::OnEnterPlayerState(PlayerState state)
 {
+	const int ANIMATION_SPPED_IDLE = 6;
+	const int ANIMATION_SPPED_RUN = 12;
+	const int ANIMATION_SPPED_JUMP = 10;
+	const int ANIMATION_SPPED_ATTACK = 16;
+	const int ANIMATION_SPPED_DAMAGED = 4;
 	switch (state) {
 	case PlayerState::IDLE:
-		SetAnimation(AnimType::IDLE, 6);
+		SetAnimation(AnimType::IDLE, ANIMATION_SPPED_IDLE);
 		break;
 
 	case PlayerState::RUN:
-		SetAnimation(AnimType::RUN, 12);
+		SetAnimation(AnimType::RUN, ANIMATION_SPPED_RUN);
 		break;
-	
+
 	case PlayerState::JUMP:
-		SetAnimation(AnimType::JUMP, 10);
+		SetAnimation(AnimType::JUMP, ANIMATION_SPPED_JUMP);
 		break;
 
 	case PlayerState::ATTACK:
-		SetAnimation(AnimType::ATTACK, 5);
+		SetAnimation(AnimType::ATTACK, ANIMATION_SPPED_ATTACK);
+		// swordを有効化して、swordの位置をプレイヤーの前に変更する
+		equipped_sword->SetActive(true);
+		if (current_direction == Direction::FRONT)
+		{
+			equipped_sword->SetPosition(this->GetPosition() + Vector2D(35.0f, 5.0f));
+			equipped_sword->UpdateCollisionParamsCenterPosition(equipped_sword);
+		}
+		else if ((current_direction == Direction::BACK))
+		{
+			equipped_sword->SetPosition(this->GetPosition() + Vector2D(-5.0f, 5.0f));
+			equipped_sword->UpdateCollisionParamsCenterPosition(equipped_sword);
+		}
 		break;
 	case PlayerState::DAMAGE:
-		SetAnimation(AnimType::DAMAGED, 4);
+		SetAnimation(AnimType::DAMAGED, ANIMATION_SPPED_DAMAGED);
 		break;
 	case PlayerState::DEAD:
 		break;
-		
+
 	}
 }
 
 void Player::OnLeavePlayerState(PlayerState state)
 {
+	switch (state) {
+	case PlayerState::ATTACK:
+		// swordを無効化
+		equipped_sword->SetActive(false);
+	}
 }
 
 void Player::UpdateInput()
@@ -316,53 +339,41 @@ void Player::UpdateInvincibleTimer()
 	}
 }
 
-void Player::UpdateCollisionParams()
-{
-	// コリジョンパラメータの更新
-	body_collision_params.center_position = GetPosition() + center_dir;
-}
-
 void Player::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction)
 {
 	switch (hit_collsion_direction)
 	{
 	case HitCollisionDirection::BOTTOM:
 		position.y = hit_mapchip_position - (body_collision_params.box_extent.y / 2 - 1) - center_dir.y ;		
-		UpdateCollisionParams();
+		UpdateCollisionParamsCenterPosition(this);
 		verocity.y = 0.0f;
 		current_isground = IsGround::OnGround;
 		break;
 	case HitCollisionDirection::TOP:
 		position.y = hit_mapchip_position + SIZE_CHIP_HEIGHT + (body_collision_params.box_extent.y / 2 - 1) - center_dir.y;
-		UpdateCollisionParams();
+		UpdateCollisionParamsCenterPosition(this);
 		break;
 	case HitCollisionDirection::RIGHT:
 		position.x = hit_mapchip_position  - (body_collision_params.box_extent.x / 2 - 1) - center_dir.x;
-		UpdateCollisionParams();
+		UpdateCollisionParamsCenterPosition(this);
 		break;
 	case HitCollisionDirection::LEFT:
 		position.x = hit_mapchip_position + SIZE_CHIP_WIDTH + (body_collision_params.box_extent.x / 2 - 1) - center_dir.x;
-		UpdateCollisionParams();
+		UpdateCollisionParamsCenterPosition(this);
 		break;
 	case HitCollisionDirection::NOHIT:
 		break;
 	}
 }
 
-void Player::OnHitObject()
+void Player::OnHitObject(class GameObject* opponent_gameobject)
 {
-	/*
-	const float INVINCIBLE_TIMER = 60.0f; // 無敵時間
-	// 少しの時間だけ無敵
-	SetInvincibleMode(true, INVINCIBLE_TIMER);
-	// ダメージステートに変更
-	ChangePlayerState(PlayerState::DAMAGE);
-	*/
+	
 }
 
-void Player::OnDamaged(int damage)
+void Player::OnDamaged(int damage, Character* damaged_character)
 {
-	__super::OnDamaged(damage);
+	__super::OnDamaged(damage, damaged_character);
 	const float INVINCIBLE_TIMER = 60.0f; // 無敵時間
 	const float NOCKBACK_DELTA_POSITION = 20.0f; // ノックバックで動く距離
 	// 少しの時間だけ無敵
@@ -373,5 +384,5 @@ void Player::OnDamaged(int damage)
 	// ノックバック
 	position.x -= NOCKBACK_DELTA_POSITION;
 	delta_position.x -= NOCKBACK_DELTA_POSITION;
-	UpdateCollisionParams();
+	UpdateCollisionParamsCenterPosition(this);
 }

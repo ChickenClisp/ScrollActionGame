@@ -28,7 +28,7 @@ public:
 
 	/**
 	 * シーンのセット
-	 * @param	new_owner_scene	セットするPosition
+	 * @param	new_owner_scene	セットするシーン
 	 */
 	void SetOwnerScene(class SceneBase* new_owner_scene);
 
@@ -57,6 +57,12 @@ public:
 	void SetDrawSortPriority(int new_priority);
 
 	/**
+	 * コリジョンパラメータのセンターポジションの更新
+	 * （SetPosition()したあとに使う）
+	 */
+	void UpdateCollisionParamsCenterPosition(class GameObject* gameobject);
+
+	/**
 	 * マップチップとの衝突イベント(押し戻し)
 	 * @param hit_mapchip_position   衝突したマップチップの位置
 	 *		  hit_collsion_direction 衝突した面
@@ -64,12 +70,13 @@ public:
 	virtual void OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction) {}
 
 	/**
-	 * オブジェクトとの衝突イベント
+	 * 他オブジェクトとの衝突イベント
+	 * @param opponent_gameobject 衝突した他オブジェクト
 	 */
-	virtual void OnHitObject() {}
+	virtual void OnHitObject(class GameObject* opponent_gameobject) {}
 
-	Vector2D GetPrevPosition() { return prev_position; }
-	Vector2D GetDeltaPosition() { return delta_position; }
+	Vector2D GetPrevPosition() const { return prev_position; }
+	Vector2D GetDeltaPosition() const { return delta_position; }
 
 	CollisionParams GetCollisionParams() const { return body_collision_params; }
 	void SetCollisionParams(CollisionParams& collision_params);
@@ -90,4 +97,7 @@ protected:
 
 	// コリジョンパラメータ
 	CollisionParams  body_collision_params;
+
+	// positionからbody_collision_params.center_positionまでのベクトル
+	Vector2D center_dir;
 };

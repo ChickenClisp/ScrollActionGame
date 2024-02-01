@@ -10,6 +10,7 @@ enum class CollisionObjectType : unsigned short
 	PLAYER,
 	ENEMY,
 	ITEM,
+	SWORD,
 };
 
 /**

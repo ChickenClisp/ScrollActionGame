@@ -4,6 +4,7 @@
 #include "../../GameObject/Character/EnemyBase/Slime/Slime.h"
 #include "../../GameObject/BackImage/BackImage.h"
 #include "../../GameObject/Ground/Ground.h"
+#include "../../GameObject/Sword/Sword.h"
 #include "DxLib.h"
 #include "../../Utility/Vector2D.h"
 #include <string>
@@ -12,7 +13,6 @@
 
 IngameScene::IngameScene()
 	: player(nullptr)
-	, slime(nullptr)
 {
 }
 
@@ -30,13 +30,15 @@ void IngameScene::Initialize()
 	// Objectを生成
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
 	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 8.0f, SCREEN_RESOLUTION_Y * 3.0f / 4.0f));
-	slime = CreateObject<Slime>(Vector2D(500.0f, 320.0f));
+	class Slime* slime = CreateObject<Slime>(Vector2D(500.0f, 320.0f));
+	class Sword* sword = CreateObject<Sword>(Vector2D(0.0f, 0.0f));
+	player->SetSword(sword);
 	ground = CreateObject<Ground>(Vector2D(0, 0));
 	ground->SetGroundData(stage_data);
 	// 移動するオブジェクトを配列に格納
 	move_objects.push_back(player);
 	move_objects.push_back(slime);
-	
+	move_objects.push_back(sword);
 }
 
 SceneType IngameScene::Update(float delta_seconds)

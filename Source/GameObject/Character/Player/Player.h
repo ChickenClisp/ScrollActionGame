@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Character.h"
+#include "../../../GameObject/Sword/Sword.h"
 #include "../Source/Utility/GraphicStructure.h"
 
 #define PLAYER_IDLE   (GraphicStructure{"Resources/Images/collon_wait_a.bmp", 4, 4, 1, 128, 128, 10})
@@ -34,11 +35,17 @@ public:
 	virtual void Finalize() override;
 	//~ End GameObject interface
 	virtual void OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction) override;
-	virtual void OnHitObject()override;
+	virtual void OnHitObject(class GameObject* opponent_gameobject)override;
 	bool GetInvincibleMode() { return is_invincible; }
 	void SetInvincibleMode(bool b_invincible, float timer) { is_invincible = b_invincible; invincible_timer = timer;}
+	/**
+	 * シーンのセット
+	 * @param	new_sword	セットするsword
+	 */
+	void SetSword(class Sword* new_sword){ equipped_sword = new_sword; }
+
 protected:
-	virtual void OnDamaged(int damage) override;
+	virtual void OnDamaged(int damage, Character* damaged_character) override;
 
 private:
 	void ChangePlayerState(PlayerState new_state);
@@ -46,9 +53,9 @@ private:
 	void OnLeavePlayerState(PlayerState state);
 	void UpdateInput();
 	void UpdateInvincibleTimer();
-	void UpdateCollisionParams();
 private:
 	PlayerState current_player_state;
+	class Sword* equipped_sword; 
 	bool is_invincible;               // 無敵モード
 	float invincible_timer;           // 無敵時間
 	int key[256];

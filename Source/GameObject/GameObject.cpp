@@ -5,6 +5,8 @@ GameObject::GameObject()
 	: owner_scene(nullptr)
 	, position(Vector2D())
 	, draw_sort_priority(0)
+	, body_collision_params()
+	, center_dir()
 {
 }
 
@@ -21,6 +23,12 @@ void GameObject::SetPosition(const Vector2D& new_position)
 void GameObject::SetDrawSortPriority(int new_priority)
 {
 	draw_sort_priority = new_priority;
+}
+
+void GameObject::UpdateCollisionParamsCenterPosition(class GameObject* gameobject)
+{
+	// コリジョンパラメータの更新
+	gameobject->body_collision_params.center_position = gameobject->GetPosition() + gameobject->center_dir;
 }
 
 void GameObject::SetCollisionParams(CollisionParams& collision_params)

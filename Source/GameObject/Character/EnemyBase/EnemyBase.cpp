@@ -111,3 +111,21 @@ void EnemyBase::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDir
 		break;
 	}
 }
+
+void EnemyBase::OnHitObject(GameObject* opponent_gameobject)
+{
+	// 衝突オブジェクトがswordの場合
+	if (opponent_gameobject->GetCollisionParams().collision_object_type == CollisionObjectType::SWORD)
+	{
+		// swordが有効かされていた場合
+		Sword* sword = dynamic_cast<Sword*>(opponent_gameobject);
+		if (sword->GetActive() == true)
+		{
+			// プレイヤーから敵への攻撃イベントを行う
+			IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
+			in_game_scene->PlayertoEnemyAttackEvent(this);
+			// swordを無効化(重複して攻撃させないため)
+			sword->SetActive(false);
+		}
+	}
+}
