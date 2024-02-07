@@ -12,6 +12,7 @@ Character::Character()
 	, animation_frame(0)
 	, animation_frame_adjust(0)
 	, animation_speed(1) // animation_frame_adjustより大きくして,起動時にUpdateAnimationのif文がfalseになるようにする
+	, animation_is_loop()
 	, current_direction()
 	, current_isground()
 	, verocity({})
@@ -38,6 +39,12 @@ void Character::Update(float delta_seconds)
 
 void Character::UpdateAnimation()
 {
+	// animation_frameが最後かつループしないアニメーションの場合、何もしない
+	if (animation_frame == graphic_handles_map[animtype].size() - 1 && animation_is_loop == false)
+	{
+		return;
+	}
+	// 設定したspeedを超えたときに次のanimationに変える
 	if (++animation_frame_adjust > animation_speed)
 	{
 		animation_frame++;
@@ -78,11 +85,12 @@ void Character::OnDead()
 }
 
 
-void Character::SetAnimation(AnimType new_animtype, int new_animation_speed)
+void Character::SetAnimation(AnimType new_animtype, int new_animation_speed, bool b_loop)
 {
 	animtype = new_animtype;
 	graphic_handle = graphic_handles_map[animtype][animation_frame];
 	animation_speed = std::floor(60 / new_animation_speed);
+	animation_is_loop = b_loop;
 }
 
 void Character::SetFrameZero()

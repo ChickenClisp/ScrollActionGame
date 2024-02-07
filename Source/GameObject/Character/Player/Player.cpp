@@ -79,7 +79,7 @@ void Player::Update(float delta_seconds)
 	__super::Update(delta_seconds);
 	const float MAX_SPEED = 300.0f;
 	const float JUMP_POWER = 800.0f;
-	const float GRAVITY = 30.0f;
+	const float GRAVITY = 45.0f;
 	UpdateInput();
 	UpdateInvincibleTimer();
 	printfDx("%d\n", current_player_state);
@@ -149,10 +149,6 @@ void Player::Update(float delta_seconds)
 		}
 		break;
 	case PlayerState::JUMP:
-		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size() - 1)
-		{
-			animation_frame_adjust = 0;
-		}
 		// 着地した場合、IDLEにステートを変更
 		if (current_isground == IsGround::OnGround)
 		{
@@ -163,7 +159,7 @@ void Player::Update(float delta_seconds)
 		// ATTACK中は移動量を下げる
 		verocity.x *= 0.80f;
 		if (abs(verocity.x) < 50.0f) verocity.x = 0.0f;
-		// ATTACKのアニメーションが終われば
+		// ATTACKのアニメーションが終わったら、IDLEにステートを変更
 		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size()-1)
 		{
 			ChangePlayerState(PlayerState::IDLE);
@@ -265,25 +261,25 @@ void Player::OnEnterPlayerState(PlayerState state)
 {
 	const int ANIMATION_SPPED_IDLE = 6;
 	const int ANIMATION_SPPED_RUN = 12;
-	const int ANIMATION_SPPED_JUMP = 12;
+	const int ANIMATION_SPPED_JUMP = 16;
 	const int ANIMATION_SPPED_ATTACK = 16;
 	const int ANIMATION_SPPED_DAMAGED = 4;
 	switch (state) {
 	case PlayerState::IDLE:
-		SetAnimation(AnimType::IDLE, ANIMATION_SPPED_IDLE);
+		SetAnimation(AnimType::IDLE, ANIMATION_SPPED_IDLE, true);
 		break;
 
 	case PlayerState::RUN:
-		SetAnimation(AnimType::RUN, ANIMATION_SPPED_RUN);
+		SetAnimation(AnimType::RUN, ANIMATION_SPPED_RUN, true);
 		break;
 
 	case PlayerState::JUMP:
-		SetAnimation(AnimType::JUMP, ANIMATION_SPPED_JUMP);
+		SetAnimation(AnimType::JUMP, ANIMATION_SPPED_JUMP, false);
 		current_isground = IsGround::InAir;
 		break;
 
 	case PlayerState::ATTACK:
-		SetAnimation(AnimType::ATTACK, ANIMATION_SPPED_ATTACK);
+		SetAnimation(AnimType::ATTACK, ANIMATION_SPPED_ATTACK, false);
 		// swordを有効化して、swordの位置をプレイヤーの前に変更する
 		equipped_sword->SetActive(true);
 		if (current_direction == Direction::FRONT)
@@ -298,7 +294,7 @@ void Player::OnEnterPlayerState(PlayerState state)
 		}
 		break;
 	case PlayerState::DAMAGE:
-		SetAnimation(AnimType::DAMAGED, ANIMATION_SPPED_DAMAGED);
+		SetAnimation(AnimType::DAMAGED, ANIMATION_SPPED_DAMAGED, false);
 		break;
 	case PlayerState::DEAD:
 		break;

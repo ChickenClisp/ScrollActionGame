@@ -52,7 +52,7 @@ protected:
 	virtual void OnDamaged(int damage, class Character* damaged_character);
 	virtual void OnDead();
 	// animationの画像ハンドル, speedをセットする
-	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed);
+	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed, bool b_loop);
 	virtual void SetFrameZero();
 
 private:
@@ -68,6 +68,7 @@ protected:
 	int animation_frame;
 	int animation_frame_adjust;
 	int animation_speed;
+	bool animation_is_loop;
 	Direction current_direction;
 	IsGround current_isground;
 

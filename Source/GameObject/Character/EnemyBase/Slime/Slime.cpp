@@ -163,19 +163,19 @@ void Slime::OnEnterEnemyState(EnemyState state)
 {
 	switch (state) {
 	case EnemyState::IDLE:
-		SetAnimation(AnimType::IDLE, 6);
+		SetAnimation(AnimType::IDLE, 6, true);
 		break;
 
 	case EnemyState::RUN:
-		SetAnimation(AnimType::RUN, 12);
+		SetAnimation(AnimType::RUN, 12, true);
 		break;
 
 	case EnemyState::ATTACK:
-		SetAnimation(AnimType::ATTACK, 5);
+		SetAnimation(AnimType::ATTACK, 5, false);
 		break;
 
 	case EnemyState::DEAD:
-		SetAnimation(AnimType::DEAD, 5);
+		SetAnimation(AnimType::DEAD, 5, false);
 		break;
 
 	}
