@@ -30,14 +30,24 @@ void IngameScene::Initialize()
 	// Objectを生成
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
 	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 8.0f, SCREEN_RESOLUTION_Y * 3.0f / 4.0f));
-	class Slime* slime = CreateObject<Slime>(Vector2D(500.0f, 320.0f));
+	class Slime* slime1 = CreateObject<Slime>(Vector2D(500.0f, 320.0f));
+	class Slime* slime2 = CreateObject<Slime>(Vector2D(700.0f, 360.0f));
+	class Slime* slime3 = CreateObject<Slime>(Vector2D(900.0f, 360.0f));
+	class Slime* slime4 = CreateObject<Slime>(Vector2D(2700.0f, 340.0f));
+	class Slime* slime5 = CreateObject<Slime>(Vector2D(4000.0f, 340.0f));
+	class Slime* slime6 = CreateObject<Slime>(Vector2D(4100.0f, 340.0f));
 	class Sword* sword = CreateObject<Sword>(Vector2D(0.0f, 0.0f));
 	player->SetSword(sword);
 	ground = CreateObject<Ground>(Vector2D(0, 0));
 	ground->SetGroundData(stage_data);
 	// 移動するオブジェクトを配列に格納
 	move_objects.push_back(player);
-	move_objects.push_back(slime);
+	move_objects.push_back(slime1);
+	move_objects.push_back(slime2);
+	move_objects.push_back(slime3);
+	move_objects.push_back(slime4);
+	move_objects.push_back(slime5);
+	move_objects.push_back(slime6);
 	move_objects.push_back(sword);
 }
 

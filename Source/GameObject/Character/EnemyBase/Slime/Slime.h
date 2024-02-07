@@ -22,6 +22,7 @@ public:
 	virtual void Draw(const Vector2D& screen_offset) override;
 	virtual void Finalize() override;
 	//~ End GameObject interface
+	virtual void OnDead() override;
 protected:
 	virtual void OnEnterEnemyState(EnemyState state)override;
 	virtual void OnLeaveEnemyState(EnemyState state)override;

@@ -50,7 +50,7 @@ public:
 
 protected:
 	virtual void OnDamaged(int damage, class Character* damaged_character);
-	virtual void OnDead(class Character* died_character);
+	virtual void OnDead();
 	// animationの画像ハンドル, speedをセットする
 	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed);
 	virtual void SetFrameZero();

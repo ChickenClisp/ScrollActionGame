@@ -31,6 +31,7 @@ protected:
 	void ChangeEnemyState(EnemyState new_state);
 	virtual void OnEnterEnemyState(EnemyState state);
 	virtual void OnLeaveEnemyState(EnemyState state);
+	virtual void OnDead() override;
 	void UpdateCollisionParams();
 
 protected:

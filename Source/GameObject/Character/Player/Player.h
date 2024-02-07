@@ -46,6 +46,7 @@ public:
 
 protected:
 	virtual void OnDamaged(int damage, Character* damaged_character) override;
+	virtual void OnDead() override;
 
 private:
 	void ChangePlayerState(PlayerState new_state);

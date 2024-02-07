@@ -23,15 +23,25 @@ int GraphicResourceManager::LoadGraphicResource(const std::string file_name)
 
 void GraphicResourceManager::LoadDivGraphicResource(const std::string file_name, int all_num, int x_num, int y_num, int x_size, int y_size, std::vector<int>& handle_buf)
 {
-	// ‚·‚Å‚É‘¶İ‚µ‚Ä‚¢‚éê‡, ‰½‚à‚µ‚È‚¢
+	// ‚·‚Å‚É‘¶İ‚µ‚Ä‚¢‚éê‡, ‚»‚Ìvalue‚ğ•Ô‚·
 	if (loaded_graphic_resources.find(file_name) != loaded_graphic_resources.end())
 	{
+		handle_buf.push_back(loaded_graphic_resources[file_name]);
+		for (int i = 1; i < all_num; i++)
+		{
+			handle_buf.push_back(loaded_graphic_resources[file_name + std::to_string(i)]);
+		}
 		return;
 	}
 	// ‰æ‘œ‚ğ“o˜^‚·‚é
 	handle_buf.resize(all_num);
 	LoadDivGraph(file_name.c_str(), all_num, x_num, y_num, x_size, y_size, handle_buf.data());
+
 	loaded_graphic_resources.emplace(file_name, handle_buf[0]);
+	for (int i = 1; i < all_num; i++)
+	{
+		loaded_graphic_resources.emplace(file_name + std::to_string(i), handle_buf[i]);
+	}
 	
 	return ;
 }

@@ -68,14 +68,13 @@ void Character::OnDamaged(int damage, class Character* damaged_character)
 	// Ž€–S”»’è
 	if (hp <= 0)
 	{
-		OnDead(damaged_character);
+		OnDead();
 	}
 }
 
-void Character::OnDead(class Character* died_character)
+void Character::OnDead()
 {
 	printfDx("OnDead\n");
-	owner_scene->DestroyObject(died_character);
 }
 
 

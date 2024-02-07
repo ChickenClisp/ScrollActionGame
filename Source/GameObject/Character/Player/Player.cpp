@@ -79,10 +79,10 @@ void Player::Update(float delta_seconds)
 	__super::Update(delta_seconds);
 	const float MAX_SPEED = 300.0f;
 	const float JUMP_POWER = 800.0f;
-	const float GRAVITY = 50.0f;
+	const float GRAVITY = 30.0f;
 	UpdateInput();
 	UpdateInvincibleTimer();
-
+	printfDx("%d\n", current_player_state);
 	prev_position = GetPosition();
 
 	// もしAorDが押されていなかったら、速度を下げる
@@ -126,7 +126,6 @@ void Player::Update(float delta_seconds)
 	if (key[KEY_INPUT_SPACE]==1 && current_isground == IsGround::OnGround)
 	{
 		verocity.y -= JUMP_POWER;
-		current_isground = IsGround::InAir;
 		ChangePlayerState(PlayerState::JUMP);
 	}
 	// もしEが押されてたら、攻撃
@@ -150,8 +149,12 @@ void Player::Update(float delta_seconds)
 		}
 		break;
 	case PlayerState::JUMP:
-		// JUMPのアニメーションが終われば
-		if (animation_frame == graphic_handles_map[AnimType::JUMP].size() - 1)
+		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size() - 1)
+		{
+			animation_frame_adjust = 0;
+		}
+		// 着地した場合、IDLEにステートを変更
+		if (current_isground == IsGround::OnGround)
 		{
 			ChangePlayerState(PlayerState::IDLE);
 		}
@@ -262,7 +265,7 @@ void Player::OnEnterPlayerState(PlayerState state)
 {
 	const int ANIMATION_SPPED_IDLE = 6;
 	const int ANIMATION_SPPED_RUN = 12;
-	const int ANIMATION_SPPED_JUMP = 10;
+	const int ANIMATION_SPPED_JUMP = 12;
 	const int ANIMATION_SPPED_ATTACK = 16;
 	const int ANIMATION_SPPED_DAMAGED = 4;
 	switch (state) {
@@ -276,6 +279,7 @@ void Player::OnEnterPlayerState(PlayerState state)
 
 	case PlayerState::JUMP:
 		SetAnimation(AnimType::JUMP, ANIMATION_SPPED_JUMP);
+		current_isground = IsGround::InAir;
 		break;
 
 	case PlayerState::ATTACK:
@@ -305,6 +309,8 @@ void Player::OnEnterPlayerState(PlayerState state)
 void Player::OnLeavePlayerState(PlayerState state)
 {
 	switch (state) {
+	case PlayerState::JUMP:
+		current_isground = IsGround::OnGround;
 	case PlayerState::ATTACK:
 		// swordを無効化
 		equipped_sword->SetActive(false);
@@ -385,4 +391,10 @@ void Player::OnDamaged(int damage, Character* damaged_character)
 	position.x -= NOCKBACK_DELTA_POSITION;
 	delta_position.x -= NOCKBACK_DELTA_POSITION;
 	UpdateCollisionParamsCenterPosition(this);
+}
+
+void Player::OnDead()
+{
+	__super::OnDead();
+	owner_scene->DestroyObject(this);
 }

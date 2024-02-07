@@ -77,6 +77,11 @@ void EnemyBase::OnLeaveEnemyState(EnemyState state)
 {
 }
 
+void EnemyBase::OnDead()
+{
+	__super::OnDead();
+}
+
 void EnemyBase::UpdateCollisionParams()
 {
 	// コリジョンパラメータの更新

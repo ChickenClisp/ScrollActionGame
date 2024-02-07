@@ -153,6 +153,12 @@ void Slime::Finalize()
 	graphic_handle = 0;
 }
 
+void Slime::OnDead()
+{
+	__super::OnDead();
+	owner_scene->DestroyObject(this);
+}
+
 void Slime::OnEnterEnemyState(EnemyState state)
 {
 	switch (state) {
@@ -169,6 +175,7 @@ void Slime::OnEnterEnemyState(EnemyState state)
 		break;
 
 	case EnemyState::DEAD:
+		SetAnimation(AnimType::DEAD, 5);
 		break;
 
 	}
