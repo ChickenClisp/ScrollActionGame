@@ -9,8 +9,11 @@
 // #define SLIME_DAMAGE (GraphicStructure{"Resources/Images/Enemy/Slime/slime_hurt.png", 4, 4, 1, 32, 32, 10})
 #define SLIME_DEAD (GraphicStructure{"Resources/Images/Enemy/Slime/slime_die.png", 4, 4, 1, 32, 32, 10})
 
+
 class Slime : public EnemyBase
 {
+	const float MAX_SPEED = 300.0f;  // 最大スピード(x方向)
+	const float GRAVITY = 30.0f;     // 重力加速度
 public:
 	Slime();
 	virtual ~Slime();
@@ -26,4 +29,8 @@ public:
 protected:
 	virtual void OnEnterEnemyState(EnemyState state)override;
 	virtual void OnLeaveEnemyState(EnemyState state)override;
+private:
+	void UpdateCheckConditionChangePlayerState(EnemyState state);
+	void UpdateRun();
+	void UpdateSearchAndAttack();
 };

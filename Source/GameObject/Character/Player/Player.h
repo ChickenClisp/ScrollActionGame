@@ -10,7 +10,6 @@
 #define PLAYER_ATTACK (GraphicStructure{"Resources/Images/collon_attack.bmp", 3, 3, 1, 128, 128, 15})
 #define PLAYER_DAMAGE (GraphicStructure{"Resources/Images/collon_damage.bmp", 1, 1, 1, 128, 128, 10})
 
-
 enum class PlayerState : unsigned short
 {
 	IDLE,
@@ -23,6 +22,12 @@ enum class PlayerState : unsigned short
 
 class Player : public Character
 {
+	const float INVINCIBLE_TIMER = 120.0f; // 無敵時間
+	const float NOCKBACK_DELTA_POSITION = 20.0f; // ノックバックで動く距離
+	const float MAX_SPEED = 200.0f;  // 最大スピード(x方向)
+	const float JUMP_POWER = 500.0f; // ジャンプ力(パルス)
+	const float GRAVITY = 30.0f;     // 重力加速度
+
 public:
 	Player();
 	virtual ~Player();
@@ -45,15 +50,19 @@ public:
 	void SetSword(class Sword* new_sword){ equipped_sword = new_sword; }
 
 protected:
-	virtual void OnDamaged(int damage, Character* damaged_character) override;
+	virtual void OnDamaged(Character* attack_character, Character* damaged_character) override;
 	virtual void OnDead() override;
 
 private:
+	void UpdateInvincibleTimer();
+	void UpdateInput();
+	void UpdateCheckConditionChangePlayerState(PlayerState state);
+	void UpdateRun();
+	void UpdateJump();
+	void UpdateAttack();
 	void ChangePlayerState(PlayerState new_state);
 	void OnEnterPlayerState(PlayerState state);
 	void OnLeavePlayerState(PlayerState state);
-	void UpdateInput();
-	void UpdateInvincibleTimer();
 	void OnGoalReached();
 
 public:

@@ -27,12 +27,12 @@ public:
 	virtual void Draw(const Vector2D& screen_offset) override;
 	virtual void Finalize() override;
 	//~ End GameObject interface
-	void ApplyDamage(int damage, Character* damaged_character);
+	void ApplyDamage(Character* attack_character, Character* damaged_character);
 	int GetAttackPower() const { return attack_power; }
 
 protected:
-	virtual void OnDamaged(int damage, class Character* damaged_character);
-	virtual void OnDead();
+	virtual void OnDamaged(Character* attack_character, class Character* damaged_character);
+	virtual void OnDead(){}
 
 protected:
 	int hp;

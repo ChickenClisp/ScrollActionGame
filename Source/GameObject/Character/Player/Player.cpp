@@ -61,106 +61,31 @@ void Player::Initialize()
 void Player::Update(float delta_seconds)
 {
 	__super::Update(delta_seconds);
-	const float MAX_SPEED = 300.0f;
-	const float JUMP_POWER = 800.0f;
-	const float GRAVITY = 45.0f;
-	UpdateInput();
+	// 無敵モードの場合、タイマーを動かす
 	UpdateInvincibleTimer();
 
+	// 入力を受け取る
+	UpdateInput();
+
+	// 現在の位置を取得
 	prev_position = GetPosition();
 
-	// もしAorDが押されていなかったら、速度を下げる
-	if (!key[KEY_INPUT_A] && !key[KEY_INPUT_D])
-	{
-		if (verocity.x < 0)
-		{
-			verocity.x += 30.0f;
-		}
-		else if(verocity.x > 0)
-		{
-			verocity.x -= 30.0f;
-		}
+	// PlayerStateの遷移条件のチェック
+	UpdateCheckConditionChangePlayerState(current_player_state);
 
-		if (abs(verocity.x) < 30.0f)
-		{
-			verocity.x = 0.0f;
-		}
-	}
-	// もしAが押されていたら、左向きに速度を上げる
-	else if (key[KEY_INPUT_A])
+	// ダメージステート中でなければ
+	if (current_player_state != PlayerState::DAMAGE)
 	{
-		verocity.x -= 10.0f;
-		if (abs(verocity.x) > MAX_SPEED)
-		{
-			verocity.x = -MAX_SPEED;
-		}
-		current_direction = Direction::BACK;
+		// 移動
+		UpdateRun();
+		// ジャンプ
+		UpdateJump();
+		// 攻撃
+		UpdateAttack();
 	}
-	// もしDが押されていたら、右向きに速度を上げる
-	else if (key[KEY_INPUT_D])
-	{
-		verocity.x += 10.0f;
-		if (abs(verocity.x) > MAX_SPEED)
-		{
-			verocity.x = MAX_SPEED;
-		}
-		current_direction = Direction::FRONT;
-	}
-	// もしSPACEが押されたら、ジャンプ
-	if (key[KEY_INPUT_SPACE]==1 && current_isground == IsGround::OnGround)
-	{
-		verocity.y -= JUMP_POWER;
-		ChangePlayerState(PlayerState::JUMP);
-	}
-	// もしEが押されてたら、攻撃
-	if (key[KEY_INPUT_E] == 1)
-	{
-		ChangePlayerState(PlayerState::ATTACK);
-	}
-	
-	// PlayerStateの遷移条件
-	switch (current_player_state){
-	case PlayerState::IDLE:
-		if (abs(verocity.x) > 0)
-		{
-			ChangePlayerState(PlayerState::RUN);
-		}
-		break;
-	case PlayerState::RUN:
-		if (verocity.x == 0.0f)
-		{
-			ChangePlayerState(PlayerState::IDLE);	
-		}
-		break;
-	case PlayerState::JUMP:
-		// 着地した場合、IDLEにステートを変更
-		if (current_isground == IsGround::OnGround)
-		{
-			ChangePlayerState(PlayerState::IDLE);
-		}
-		break;
-	case PlayerState::ATTACK:
-		// ATTACK中は移動量を下げる
-		verocity.x *= 0.80f;
-		if (abs(verocity.x) < 50.0f) verocity.x = 0.0f;
-		// ATTACKのアニメーションが終わったら、IDLEにステートを変更
-		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size()-1)
-		{
-			ChangePlayerState(PlayerState::IDLE);
-		}
-		break;
-	case PlayerState::DAMAGE:
-		// DAMAGEのアニメーションが終われば
-		if (animation_frame == graphic_handles_map[AnimType::DAMAGED].size() - 1)
-		{
-			ChangePlayerState(PlayerState::IDLE);
-		}
-		break;
-	}
-
-	verocity.y += GRAVITY;
 
 	// 移動ベクトルを求める	
+	verocity.y += GRAVITY;
 	delta_position = verocity * delta_seconds;
 	// 新しいx座標がステージ外であった場合、移動ベクトルを0にする
 	if (prev_position.x + delta_position.x <  - (body_collision_params.box_extent.x / 2) ||
@@ -169,7 +94,7 @@ void Player::Update(float delta_seconds)
 		delta_position.x = 0.0f;
 	}
 	// 新しいy座標がステージ外であった(ステージ落下)場合、死亡処理を行う
-	if ((prev_position.y + delta_position.y) > owner_scene->stage_size.y - body_collision_params.box_extent.y)
+	if ((prev_position.y + delta_position.y) > owner_scene->stage_size.y)
 	{
 		OnDead();
 	}
@@ -215,10 +140,10 @@ void Player::Draw(const Vector2D& screen_offset)
 		}
 		
 	}
-	
-	std::string string_position = "x:" + std::to_string(x) + ", y:" + std::to_string(y);
 
-	DrawStringF(x - screen_offset_x - 20, y - screen_offset_y - 20, string_position.c_str(), GetColor(255, 255, 255));
+	// デバッグ用　ポジション表示
+	std::string string_position = "x:" + std::to_string(x) + ", y:" + std::to_string(y);
+	DrawStringF(x - screen_offset_x - 20, y - screen_offset_y - 30, string_position.c_str(), GetColor(255, 255, 255));
 
 	// デバッグ用　コリジョンの表示
 	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 50, y - screen_offset_y + 50, GetColor(0, 0, 255), false);
@@ -237,6 +162,138 @@ void Player::Finalize()
 	// 画像の破棄
 	//DeleteGraph(graphic_handle);
 	graphic_handle = 0;
+}
+
+void Player::UpdateInvincibleTimer()
+{
+	// 無敵モードならタイマーを動かす。0になったら無敵モードを解除
+	if (is_invincible) {
+		invincible_timer--;
+		if (invincible_timer <= 0) {
+			is_invincible = false;
+		}
+	}
+}
+
+void Player::UpdateInput()
+{
+	char _key[256];
+	GetHitKeyStateAll(_key);
+	for (int i = 0; i < 256; i++)
+	{
+		if (_key[i] != 0)
+		{
+			key[i]++;
+		}
+		else
+		{
+			key[i] = 0;
+		}
+	}
+}
+
+void Player::UpdateCheckConditionChangePlayerState(PlayerState state)
+{
+	switch (current_player_state) {
+	case PlayerState::IDLE:
+		if (abs(verocity.x) > 0)
+		{
+			ChangePlayerState(PlayerState::RUN);
+		}
+		break;
+	case PlayerState::RUN:
+		// x方向の速度が0かつAとDのkeyが押されていない場合、IDLEにステートを変更
+		if (verocity.x == 0.0f && !key[KEY_INPUT_A] && !key[KEY_INPUT_D])
+		{
+			ChangePlayerState(PlayerState::IDLE);
+		}
+		break;
+	case PlayerState::JUMP:
+		// 着地した場合、IDLEにステートを変更
+		if (current_isground == IsGround::OnGround)
+		{
+			ChangePlayerState(PlayerState::IDLE);
+		}
+		break;
+	case PlayerState::ATTACK:
+		// ATTACK中は移動量を下げる
+		verocity.x *= 0.80f;
+		if (abs(verocity.x) < 50.0f) verocity.x = 0.0f;
+		// ATTACKのアニメーションが終わったら、IDLEにステートを変更
+		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size() - 1)
+		{
+			ChangePlayerState(PlayerState::IDLE);
+		}
+		break;
+	case PlayerState::DAMAGE:
+		// DAMAGEのアニメーションが終わったら、IDLEにステートを変更
+		if (animation_frame == graphic_handles_map[AnimType::DAMAGED].size() - 1)
+		{
+			ChangePlayerState(PlayerState::IDLE);
+		}
+		break;
+	}
+
+}
+
+void Player::UpdateRun()
+{
+	// もしAorDが押されていなかったら、速度を下げる
+	if (!key[KEY_INPUT_A] && !key[KEY_INPUT_D])
+	{
+		if (verocity.x < 0)
+		{
+			verocity.x += 30.0f;
+		}
+		else if (verocity.x > 0)
+		{
+			verocity.x -= 30.0f;
+		}
+
+		if (abs(verocity.x) < 30.0f)
+		{
+			verocity.x = 0.0f;
+		}
+	}
+	// もしAが押されていたら、左向きに速度を上げる
+	else if (key[KEY_INPUT_A])
+	{
+		verocity.x -= 10.0f;
+		if (abs(verocity.x) > MAX_SPEED)
+		{
+			verocity.x = -MAX_SPEED;
+		}
+		current_direction = Direction::BACK;
+	}
+	// もしDが押されていたら、右向きに速度を上げる
+	else if (key[KEY_INPUT_D])
+	{
+		verocity.x += 10.0f;
+		if (abs(verocity.x) > MAX_SPEED)
+		{
+			verocity.x = MAX_SPEED;
+		}
+		current_direction = Direction::FRONT;
+	}
+}
+
+void Player::UpdateJump()
+{
+	// もしSPACEが押されたら、ジャンプ
+	if (key[KEY_INPUT_SPACE] == 1 && current_isground == IsGround::OnGround)
+	{
+		verocity.y -= JUMP_POWER;
+		ChangePlayerState(PlayerState::JUMP);
+	}
+}
+
+void Player::UpdateAttack()
+{
+	// もしEが押されてたら、攻撃
+	if (key[KEY_INPUT_E] == 1)
+	{
+		ChangePlayerState(PlayerState::ATTACK);
+	}
 }
 
 void Player::ChangePlayerState(PlayerState new_state)
@@ -288,6 +345,7 @@ void Player::OnEnterPlayerState(PlayerState state)
 		break;
 	case PlayerState::DAMAGE:
 		SetAnimation(AnimType::DAMAGED, ANIMATION_SPPED_DAMAGED, false);
+		verocity.x = 0.0f;
 		break;
 	case PlayerState::DEAD:
 		break;
@@ -301,34 +359,6 @@ void Player::OnLeavePlayerState(PlayerState state)
 	case PlayerState::ATTACK:
 		// swordを無効化
 		equipped_sword->SetActive(false);
-	}
-}
-
-void Player::UpdateInput()
-{
-	char _key[256];
-	GetHitKeyStateAll(_key);
-	for (int i = 0; i < 256; i++)
-	{
-		if (_key[i] != 0)
-		{
-			key[i]++;
-		}
-		else
-		{
-			key[i] = 0;
-		}
-	}
-}
-
-void Player::UpdateInvincibleTimer()
-{
-	// 無敵モードならタイマーを動かす。0になったら無敵モードを解除
-	if (is_invincible) {
-		invincible_timer--;
-		if (invincible_timer <= 0) {
-			is_invincible = false;
-		}
 	}
 }
 
@@ -384,23 +414,33 @@ void Player::OnHitObject(class GameObject* opponent_gameobject)
 			EnemyBase* enemy = dynamic_cast<EnemyBase*>(opponent_gameobject);
 			in_game_scene->EnemytoPlayerAttackEvent(enemy);
 		}
-
 	}
 }
 
-void Player::OnDamaged(int damage, Character* damaged_character)
+void Player::OnDamaged(Character* attack_character, Character* damaged_character)
 {
-	__super::OnDamaged(damage, damaged_character);
-	const float INVINCIBLE_TIMER = 120.0f; // 無敵時間
-	const float NOCKBACK_DELTA_POSITION = 20.0f; // ノックバックで動く距離
+	__super::OnDamaged(attack_character, damaged_character);
 	// 少しの時間だけ無敵
 	SetInvincibleMode(true, INVINCIBLE_TIMER);
 	// ダメージステートに変更
 	ChangePlayerState(PlayerState::DAMAGE);
 
+	// 敵の方向を向く
+	IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
+	EnemyBase* enemy_base = dynamic_cast<EnemyBase*>(attack_character);
+	current_direction = in_game_scene->VectorPlayertoEnemy(enemy_base);
+
 	// ノックバック
-	position.x -= NOCKBACK_DELTA_POSITION;
-	delta_position.x -= NOCKBACK_DELTA_POSITION;
+	if (current_direction == Direction::FRONT)
+	{
+		position.x -= NOCKBACK_DELTA_POSITION;
+		delta_position.x -= NOCKBACK_DELTA_POSITION;
+	}
+	else if(current_direction == Direction::BACK)
+	{
+		position.x += NOCKBACK_DELTA_POSITION;
+		delta_position.x += NOCKBACK_DELTA_POSITION;
+	}
 	UpdateCollisionParamsCenterPosition(this);
 }
 

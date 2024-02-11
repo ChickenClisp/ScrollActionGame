@@ -32,25 +32,9 @@ void IngameScene::Initialize()
 	// マップの読み込み
 	LoadCSV("Resources/stage2.csv", stage_data);
 	stage_size.x = (stage_data[0].size() - 1) * SIZE_CHIP_WIDTH; // -1の理由：右端の列がすべて０のプレイヤー禁止エリアがあるため
-	stage_size.y = (stage_data.size() - 2) * SIZE_CHIP_HEIGHT;   // -2の理由：下端2行がすべて０のプレイヤー禁止エリアがあるため
+	stage_size.y = (stage_data.size() - 3) * SIZE_CHIP_HEIGHT;   // -3の理由：下端3行がすべて０のプレイヤー禁止エリアがあるため
 
-	// Objectを生成
 	InitStage();
-	/*
-	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
-	CreateObject<Goal>(Vector2D(500.0f, 320.0f));
-	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 8.0f, SCREEN_RESOLUTION_Y * 3.0f / 4.0f));
-	CreateObject<Slime>(Vector2D(500.0f, 320.0f));
-	CreateObject<Slime>(Vector2D(700.0f, 360.0f));
-	CreateObject<Slime>(Vector2D(900.0f, 360.0f));
-	CreateObject<Slime>(Vector2D(2700.0f, 340.0f));
-	CreateObject<Slime>(Vector2D(4000.0f, 340.0f));
-	CreateObject<Slime>(Vector2D(4100.0f, 340.0f));
-	class Sword* sword = CreateObject<Sword>(Vector2D(0.0f, 0.0f));
-	player->SetSword(sword);
-	ground = CreateObject<Ground>(Vector2D(0, 0));
-	ground->SetGroundData(stage_data);
-	*/
 }
 
 SceneType IngameScene::Update(float delta_seconds)
@@ -89,6 +73,11 @@ void IngameScene::Draw()
 {
 	// 親クラスのDraw()
 	__super::Draw();
+
+	std::string string_player_life = "LEFT: " + std::to_string(player_life);
+	DrawStringF(0, 0, string_player_life.c_str(), GetColor(255, 255, 255));
+
+
 
 	// ゴールした場合、GOAL!!を表示
 	if (is_goal == true)
@@ -182,11 +171,23 @@ Direction IngameScene::VectorEnemytoPlayer(EnemyBase* enemy_base)
 	}
 }
 
+Direction IngameScene::VectorPlayertoEnemy(EnemyBase* enemy_base)
+{
+	Vector2D vec = enemy_base->GetPosition() - player->GetPosition();
+	if (vec.x > 0.0f) {
+		return Direction::FRONT;
+	}
+	else
+	{
+		return Direction::BACK;
+	}
+}
+
 void IngameScene::PlayertoEnemyAttackEvent(EnemyBase* enemy_base)
 {
 	if (enemy_base != nullptr)
 	{
-		player->ApplyDamage(player->GetAttackPower(), enemy_base);
+		player->ApplyDamage(player, enemy_base);
 	}
 }
 
@@ -194,7 +195,7 @@ void IngameScene::EnemytoPlayerAttackEvent(EnemyBase* enemy_base)
 {
 	if (enemy_base != nullptr)
 	{
-		enemy_base->ApplyDamage(enemy_base->GetAttackPower(), player);
+		enemy_base->ApplyDamage(enemy_base, player);
 	}
 }
 

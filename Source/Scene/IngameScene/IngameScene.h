@@ -32,6 +32,11 @@ public:
 	 */
 	Direction VectorEnemytoPlayer(EnemyBase* enemy_base);
 	/**
+	 * 敵->プレイヤーの方向を返す
+	 * @param enemy_base
+	 */
+	Direction VectorPlayertoEnemy(EnemyBase* enemy_base);
+	/**
 	 * プレイヤーの攻撃イベント
 	 * @param enemy_base
 	 */

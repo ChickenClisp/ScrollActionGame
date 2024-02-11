@@ -42,10 +42,9 @@ void Slime::Initialize()
 	ChangeEnemyState(EnemyState::RUN);
 	current_direction = Direction::FRONT;
 	current_isground = IsGround::OnGround;
-
 	center_dir = { 16, 16 };
-	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{32, 32}, CollisionObjectType::ENEMY , CollisonType::BLOCK };
-	search_radius = 40.0f;
+	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{20, 20}, CollisionObjectType::ENEMY , CollisonType::BLOCK };
+	search_radius = 30.0f;
 	hp = 3;
 	attack_power = 1;
 }
@@ -53,78 +52,21 @@ void Slime::Initialize()
 void Slime::Update(float delta_seconds)
 {
 	__super::Update(delta_seconds);
-	const float MAX_SPEED = 300.0f;
-	const float GRAVITY = 50.0f;
-	
 
+	// 現在の位置を取得
 	prev_position = GetPosition();
 
-	if (current_enemy_state == EnemyState::RUN)
-	{
-		switch (current_direction)
-		{
-		case Direction::FRONT:
-			verocity.x = -30.0f;
-			break;
-		case Direction::BACK:
-			verocity.x = 30.0f;
-			break;
-		}
-	}
+	// EnemyStateの遷移条件のチェック
+	UpdateCheckConditionChangePlayerState(current_enemy_state);
 
-	// もしPlayerが索敵範囲内にいたら、攻撃する
-	IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
-	if (in_game_scene->IsFoundPlayer(this))
-	{
-		// プレイヤーの方を向く
-		current_direction = in_game_scene->VectorEnemytoPlayer(this);
-		// スピードを0に(攻撃前の溜め)
-		verocity.x = -0.0f;
-		// ATTACKステートに遷移
-		ChangeEnemyState(EnemyState::ATTACK);
-		
-		// 攻撃アニメーションのフレームに応じて大きく移動する
-		const int ATTACK_FRAME = 3;
-		if (animation_frame == ATTACK_FRAME)
-		{
-			switch (current_direction)
-			{
-			case Direction::FRONT:
-				verocity.x = -60.0f;
-				break;
-			case Direction::BACK:
-				verocity.x = 60.0f;
-				break;
-			}
-		}
-	}
+	// 移動
+	UpdateRun();
+	
+	// 索敵と攻撃
+	UpdateSearchAndAttack();
 
-	// SlimeStateの遷移条件
-	switch (current_enemy_state) {
-	case EnemyState::IDLE:
-		if (abs(verocity.x) > 0)
-		{
-			ChangeEnemyState(EnemyState::RUN);
-		}
-		break;
-	case EnemyState::RUN:
-		if (verocity.x == 0.0f)
-		{
-			ChangeEnemyState(EnemyState::IDLE);
-		}
-		break;
-	case EnemyState::ATTACK:
-		// ATTACKのアニメーションが終われば
-		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size() - 1)
-		{
-			ChangeEnemyState(EnemyState::RUN);
-		}
-		break;
-	}
-
+	// 移動ベクトルを求める
 	verocity.y += GRAVITY;
-
-	// 移動ベクトルを求める	
 	delta_position = verocity * delta_seconds;
 	// 新しいx座標がステージ外であった場合、移動ベクトルを0にする
 	if (prev_position.x + delta_position.x < -(128 - (64 + body_collision_params.box_extent.x / 2)) ||
@@ -193,4 +135,70 @@ void Slime::OnEnterEnemyState(EnemyState state)
 
 void Slime::OnLeaveEnemyState(EnemyState state)
 {
+}
+
+void Slime::UpdateCheckConditionChangePlayerState(EnemyState state)
+{
+	// SlimeStateの遷移条件
+	switch (current_enemy_state) {
+	case EnemyState::IDLE:
+		break;
+	case EnemyState::RUN:
+		break;
+	case EnemyState::ATTACK:
+		// ATTACKのアニメーションが終われば
+		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size() - 1)
+		{
+			ChangeEnemyState(EnemyState::RUN);
+		}
+		break;
+	case EnemyState::DEAD:
+		break;
+	}
+}
+
+void Slime::UpdateRun()
+{
+	if (current_enemy_state == EnemyState::RUN)
+	{
+		switch (current_direction)
+		{
+		case Direction::FRONT:
+			verocity.x = -30.0f;
+			break;
+		case Direction::BACK:
+			verocity.x = 30.0f;
+			break;
+		}
+	}
+}
+
+void Slime::UpdateSearchAndAttack()
+{
+	// もしPlayerが索敵範囲内にいたら、攻撃する
+	IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
+	if (in_game_scene->IsFoundPlayer(this))
+	{
+		// プレイヤーの方を向く
+		current_direction = in_game_scene->VectorEnemytoPlayer(this);
+		// スピードを0に(攻撃前の溜め)
+		verocity.x = -0.0f;
+		// ATTACKステートに遷移
+		ChangeEnemyState(EnemyState::ATTACK);
+
+		// 攻撃アニメーションのフレームに応じて大きく移動する
+		const int ATTACK_FRAME = 2;
+		if (animation_frame == ATTACK_FRAME)
+		{
+			switch (current_direction)
+			{
+			case Direction::FRONT:
+				verocity.x = -60.0f;
+				break;
+			case Direction::BACK:
+				verocity.x = 60.0f;
+				break;
+			}
+		}
+	}
 }
