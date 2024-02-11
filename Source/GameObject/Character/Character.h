@@ -1,24 +1,6 @@
 #pragma once
 
 #include "../GameObject.h"
-#include <map>
-#include <vector>
-
-// アニメーション用のenum
-enum class AnimType
-{
-	NO_ANIMATION,
-	IDLE,
-	WALK,
-	BLINK,
-	RUN,
-	JUMP,
-	TO_FALL,
-	FALL,
-	ATTACK,
-	DAMAGED,
-	DEAD,
-};
 
 enum class Direction : unsigned short
 {
@@ -51,26 +33,11 @@ public:
 protected:
 	virtual void OnDamaged(int damage, class Character* damaged_character);
 	virtual void OnDead();
-	// animationの画像ハンドル, speedをセットする
-	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed, bool b_loop);
-	virtual void SetFrameZero();
-
-private:
-	void UpdateAnimation();
-	
 
 protected:
-	int graphic_handle;
-	std::map<AnimType, std::vector<int>> graphic_handles_map;
-	AnimType animtype;
 	int hp;
 	int attack_power;
-	int animation_frame;
-	int animation_frame_adjust;
-	int animation_speed;
-	bool animation_is_loop;
 	Direction current_direction;
 	IsGround current_isground;
-
 	Vector2D verocity;
 };

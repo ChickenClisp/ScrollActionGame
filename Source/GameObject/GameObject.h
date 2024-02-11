@@ -3,7 +3,21 @@
 #include "../Utility/Vector2D.h"
 #include "../Utility/CollisionParams.h"
 #include "../Utility/HitCollisionDirection.h"
+#include <map>
+#include <vector>
 
+// アニメーション用のenum
+enum class AnimType
+{
+	NO_ANIMATION,
+	IDLE,
+	RUN,
+	JUMP,
+	FALL,
+	ATTACK,
+	DAMAGED,
+	DEAD,
+};
 
 /**
  * ゲーム内に表示されるオブジェクトの基底クラス
@@ -81,6 +95,14 @@ public:
 	CollisionParams GetCollisionParams() const { return body_collision_params; }
 	void SetCollisionParams(CollisionParams& collision_params);
 
+
+	// animationの画像ハンドル, speedをセットする
+	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed, bool b_loop);
+	virtual void SetFrameZero();
+
+protected:
+	virtual void UpdateAnimation();
+
 protected:
 	// オーナーとなるシーン
 	class SceneBase* owner_scene;
@@ -100,4 +122,13 @@ protected:
 
 	// positionからbody_collision_params.center_positionまでのベクトル
 	Vector2D center_dir;
+
+	// animation関係パラメータ
+	int graphic_handle;
+	std::map<AnimType, std::vector<int>> graphic_handles_map;
+	AnimType animtype;
+	int animation_frame;
+	int animation_frame_adjust;
+	int animation_speed;
+	bool animation_is_loop;
 };

@@ -13,7 +13,8 @@
 #include <sstream>
 
 IngameScene::IngameScene()
-	: player(nullptr)
+	: stage_data()
+	, player(nullptr)
 	, is_goal()
 	, player_life()
 {
@@ -29,12 +30,13 @@ void IngameScene::Initialize()
 	player_life = 3;
 
 	// マップの読み込み
-	std::vector<std::vector<int>> stage_data;
 	LoadCSV("Resources/stage2.csv", stage_data);
-	stage_size.x = (stage_data[0].size() - 1) * SIZE_CHIP_WIDTH; // -1の理由：右端の列要素がすべて０のプレイヤー禁止エリアがあるため
-	stage_size.y = stage_data.size() * SIZE_CHIP_HEIGHT;
+	stage_size.x = (stage_data[0].size() - 1) * SIZE_CHIP_WIDTH; // -1の理由：右端の列がすべて０のプレイヤー禁止エリアがあるため
+	stage_size.y = (stage_data.size() - 2) * SIZE_CHIP_HEIGHT;   // -2の理由：下端2行がすべて０のプレイヤー禁止エリアがあるため
 
 	// Objectを生成
+	InitStage();
+	/*
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
 	CreateObject<Goal>(Vector2D(500.0f, 320.0f));
 	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 8.0f, SCREEN_RESOLUTION_Y * 3.0f / 4.0f));
@@ -48,6 +50,7 @@ void IngameScene::Initialize()
 	player->SetSword(sword);
 	ground = CreateObject<Ground>(Vector2D(0, 0));
 	ground->SetGroundData(stage_data);
+	*/
 }
 
 SceneType IngameScene::Update(float delta_seconds)
@@ -130,14 +133,9 @@ void IngameScene::LoadCSV(const std::string& filename, std::vector<std::vector<i
 
 void IngameScene::InitStage()
 {
-	// マップの読み込み
-	std::vector<std::vector<int>> stage_data;
-	LoadCSV("Resources/stage2.csv", stage_data);
-	stage_size.x = (stage_data[0].size() - 1) * SIZE_CHIP_WIDTH; // -1の理由：右端の列要素がすべて０のプレイヤー禁止エリアがあるため
-	stage_size.y = stage_data.size() * SIZE_CHIP_HEIGHT;
 	// Objectを生成
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
-	CreateObject<Goal>(Vector2D(500.0f, 320.0f));
+	CreateObject<Goal>(Vector2D(4300.0f, 205.0f));
 	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 8.0f, SCREEN_RESOLUTION_Y * 3.0f / 4.0f));
 	CreateObject<Slime>(Vector2D(500.0f, 320.0f));
 	CreateObject<Slime>(Vector2D(700.0f, 360.0f));

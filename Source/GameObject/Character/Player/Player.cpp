@@ -168,6 +168,11 @@ void Player::Update(float delta_seconds)
 	{
 		delta_position.x = 0.0f;
 	}
+	// 新しいy座標がステージ外であった(ステージ落下)場合、死亡処理を行う
+	if ((prev_position.y + delta_position.y) > owner_scene->stage_size.y - body_collision_params.box_extent.y)
+	{
+		OnDead();
+	}
 	// 座標の更新
 	SetPosition(prev_position + delta_position);
 	UpdateCollisionParamsCenterPosition(this);
@@ -211,6 +216,10 @@ void Player::Draw(const Vector2D& screen_offset)
 		
 	}
 	
+	std::string string_position = "x:" + std::to_string(x) + ", y:" + std::to_string(y);
+
+	DrawStringF(x - screen_offset_x - 20, y - screen_offset_y - 20, string_position.c_str(), GetColor(255, 255, 255));
+
 	// デバッグ用　コリジョンの表示
 	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 50, y - screen_offset_y + 50, GetColor(0, 0, 255), false);
 	DrawBox(body_collision_params.center_position.x - (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,

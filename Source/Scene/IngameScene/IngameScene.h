@@ -63,6 +63,7 @@ private:
 	void InitStage();
 
 private:
+	std::vector<std::vector<int>> stage_data;
 	class Player* player;
 	bool is_goal;
 	int player_life;
