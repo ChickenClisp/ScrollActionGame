@@ -52,10 +52,6 @@ void EnemyBase::Draw(const Vector2D& screen_offset)
 void EnemyBase::Finalize()
 {
 	__super::Finalize();
-
-	// ‰æ‘œ‚Ì”jŠü
-	DeleteGraph(graphic_handle);
-	graphic_handle = 0;
 }
 
 void EnemyBase::ChangeEnemyState(EnemyState new_state)

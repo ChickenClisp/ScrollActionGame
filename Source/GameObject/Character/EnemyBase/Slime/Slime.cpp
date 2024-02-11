@@ -23,7 +23,6 @@ void Slime::Initialize()
 	// 画像の読み込み
 	GraphicResourceManager& graphic_resource_manager = GraphicResourceManager::GetInstance();
 	std::vector<int> out_sprite_handles;
-
 	// IDLE
 	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/slime_idle.png"), 4, 4, 1, 32, 32, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::IDLE, out_sprite_handles);
@@ -45,8 +44,8 @@ void Slime::Initialize()
 	current_isground = IsGround::OnGround;
 
 	center_dir = { 16, 16 };
-	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{32, 32}, CollisionObjectType::ENEMY , 0, CollisonType::BLOCK };
-	search_radius = 30.0f;
+	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{32, 32}, CollisionObjectType::ENEMY , CollisonType::BLOCK };
+	search_radius = 40.0f;
 	hp = 3;
 	attack_power = 1;
 }
@@ -62,13 +61,14 @@ void Slime::Update(float delta_seconds)
 
 	if (current_enemy_state == EnemyState::RUN)
 	{
-		if (current_direction == Direction::FRONT)
+		switch (current_direction)
 		{
+		case Direction::FRONT:
 			verocity.x = -30.0f;
-		}
-		else if (current_direction == Direction::BACK)
-		{
+			break;
+		case Direction::BACK:
 			verocity.x = 30.0f;
+			break;
 		}
 	}
 
@@ -76,16 +76,26 @@ void Slime::Update(float delta_seconds)
 	IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
 	if (in_game_scene->IsFoundPlayer(this))
 	{
-		// プレイヤーの方を向いて攻撃
-		verocity.x = 0.0f;
+		// プレイヤーの方を向く
 		current_direction = in_game_scene->VectorEnemytoPlayer(this);
+		// スピードを0に(攻撃前の溜め)
+		verocity.x = -0.0f;
+		// ATTACKステートに遷移
 		ChangeEnemyState(EnemyState::ATTACK);
-
-		// 攻撃アニメーションのフレームに応じてAttackEventを起こす
-		const int ATTACK_FRAME = 2;
+		
+		// 攻撃アニメーションのフレームに応じて大きく移動する
+		const int ATTACK_FRAME = 3;
 		if (animation_frame == ATTACK_FRAME)
 		{
-			in_game_scene->EnemytoPlayerAttackEvent(this);
+			switch (current_direction)
+			{
+			case Direction::FRONT:
+				verocity.x = -60.0f;
+				break;
+			case Direction::BACK:
+				verocity.x = 60.0f;
+				break;
+			}
 		}
 	}
 
@@ -149,7 +159,7 @@ void Slime::Finalize()
 	__super::Finalize();
 
 	// 画像の破棄
-	DeleteGraph(graphic_handle);
+	//DeleteGraph(graphic_handle);
 	graphic_handle = 0;
 }
 
@@ -171,7 +181,7 @@ void Slime::OnEnterEnemyState(EnemyState state)
 		break;
 
 	case EnemyState::ATTACK:
-		SetAnimation(AnimType::ATTACK, 5, false);
+		SetAnimation(AnimType::ATTACK, 3, false);
 		break;
 
 	case EnemyState::DEAD:

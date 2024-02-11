@@ -28,12 +28,6 @@ enum class CollisonType : unsigned short
 struct CollisionParams
 {
 public:
-	/**
-	 * ターゲットに衝突しているか判定
-	 */
-	bool IsHitCheckTarget(CollisionObjectType target_object_type);
-
-public:
 	// 中心座標
 	Vector2D center_position;
 
@@ -42,9 +36,6 @@ public:
 
 	// コリジョンのオブジェクトタイプ
 	CollisionObjectType collision_object_type;
-
-	// どのCollisionObjectTypeと判定するかをまとめているパラメータ
-	unsigned int hit_object_types;
 
 	// コリジョンタイプ
 	CollisonType collision_type;

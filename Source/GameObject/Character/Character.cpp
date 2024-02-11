@@ -71,7 +71,14 @@ void Character::ApplyDamage(int damage, Character* damaged_character)
 void Character::OnDamaged(int damage, class Character* damaged_character)
 {
 	hp -= damage;
-	printfDx("%d\n", hp);
+	if (damaged_character->body_collision_params.collision_object_type == CollisionObjectType::PLAYER)
+	{
+		printfDx("Player's HP:%d\n", hp);
+	}
+	if (damaged_character->body_collision_params.collision_object_type == CollisionObjectType::ENEMY)
+	{
+		printfDx("Enemy's HP:%d\n", hp);
+	}
 	// Ž€–S”»’è
 	if (hp <= 0)
 	{

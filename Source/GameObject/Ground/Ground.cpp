@@ -81,8 +81,9 @@ void Ground::Initialize()
 	mapchips_data.push_back(out_sprite_handles[237]);
 	mapchips_data.push_back(out_sprite_handles[236]); 
 	mapchips_data.push_back(out_sprite_handles[4]);
-	mapchips_data.push_back(out_sprite_handles[4]);//50
+	mapchips_data.push_back(out_sprite_handles[4]); //50
 
+	body_collision_params = { Vector2D(), Vector2D(), CollisionObjectType::GROUND, CollisonType::OVERLAP};
 }
 
 void Ground::Update(float delta_seconds)
@@ -99,7 +100,6 @@ void Ground::Draw(const Vector2D& screen_offset)
 	// 描画を開始する場所（チップ配列座標）を求める
 	int draw_start_position_x = std::floor(screen_offset_x / SIZE_CHIP_WIDTH);
 	int draw_start_position_y = std::floor(screen_offset_y / SIZE_CHIP_HEIGHT);
-
 	
 	// ground_dataの情報をもとに描画
 	for (int y = 0; y < num_screen_height; y++)
@@ -117,7 +117,6 @@ void Ground::Draw(const Vector2D& screen_offset)
 			DrawGraph(position.x - screen_offset_x, position.y - screen_offset_y, mapchips_data[chip_id], true);
 		}
 	}
-
 }
 
 void Ground::Finalize()
@@ -125,7 +124,8 @@ void Ground::Finalize()
 	__super::Finalize();
 
 	// 画像の破棄
-	for (auto& handle: mapchips_data) {
-		DeleteGraph(handle);
-	}
+	//for (auto& graphic_handle : mapchips_data) {
+	//	DeleteGraph(graphic_handle);
+	//}
+	mapchips_data = {};
 }

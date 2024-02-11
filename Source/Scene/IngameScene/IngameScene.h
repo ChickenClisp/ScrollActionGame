@@ -41,6 +41,15 @@ public:
 	 * @param enemy_base
 	 */
 	void EnemytoPlayerAttackEvent(EnemyBase* enemy_base);
+	/**
+	 * プレイヤーの死亡イベント
+	 */
+	void OnPlayerDead();
+	/**
+	 * プレイヤーのゴールイベント
+	 */
+	void OnPlayerGoalReached();
+
 private:
 	/**
 	* csvファイルの読み込み
@@ -48,9 +57,13 @@ private:
 	*		 ground_data
 	*/
 	void LoadCSV(const std::string& filename, std::vector<std::vector<int>>& ground_data);
-
-	
+	/**
+	* ステージ初期化
+	*/
+	void InitStage();
 
 private:
 	class Player* player;
+	bool is_goal;
+	int player_life;
 };

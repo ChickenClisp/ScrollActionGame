@@ -5,7 +5,6 @@
 SceneBase::SceneBase()
 	: screen_offset(Vector2D())
 	, camera_position(Vector2D())
-	, move_objects()
 	, ground(nullptr)
 	, stage_size()
 {
@@ -67,20 +66,9 @@ void SceneBase::DestroyObject(GameObject* object)
 		return;
 	}
 
-	// 移動可能オブジェクトに関しても同様に
-	auto jterator = move_objects.begin();
-	for (; jterator != move_objects.end(); ++jterator)
-	{
-		if ((*jterator) == object)
-		{
-			break;
-		}
-	}
-
 	// 削除
 	(*iterator)->Finalize();
 	objects.erase(iterator);
-	move_objects.erase(jterator);
 	delete object;
 }
 
@@ -97,42 +85,39 @@ void SceneBase::DestroyAllObjects()
 void SceneBase::UpdateCheckCollision()
 {
 	// =====オブジェクト同士の当たり判定=====
-	// 移動可能オブジェクトの当たり判定を行う
-	for (auto object : move_objects)
+	for (auto object : objects)
 	{
+		// //コリジョンパラメータの取得
+		CollisionParams object_body_collision_params = object->GetCollisionParams();
 		
-		for (auto opponent_object : move_objects)
+		// GROUNDの場合は当たり判定を行わない
+		if (object_body_collision_params.collision_object_type == CollisionObjectType::GROUND)
 		{
-			// 自分自身の場合は無視
-			if (object == opponent_object)
+			continue;
+		}
+		
+		for (auto opponent_object : objects)
+		{
+			// 自分自身またはGROUNDの場合は無視
+			if (object == opponent_object || object_body_collision_params.collision_object_type == CollisionObjectType::GROUND)
 			{
 				continue;
 			}
 			// 当たり判定
 			if (CheckCollision(object, object->GetCollisionParams(), opponent_object->GetCollisionParams()))
 			{
-				/*
-				// プレイヤーと敵が衝突していた場合、ダメージを与える
-				if (object->GetCollisionParams().collision_object_type == CollisionObjectType::PLAYER
-					&& opponent_object->GetCollisionParams().collision_object_type == CollisionObjectType::ENEMY)
-				{
-					Character* character = dynamic_cast<Character*>(object);
-					Character* opponent_character = dynamic_cast<Character*>(opponent_object);
-					opponent_character->ApplyDamage(opponent_character->GetAttackPower(), character);
-				}
-				*/
 				object->OnHitObject(opponent_object);
 			}
 		}
 	}
 	// =====マップチップとの当たり判定=====
-	// 移動可能オブジェクトの当たり判定を行う
-	for (auto object : move_objects)
+	for (auto object : objects)
 	{
 		// //コリジョンパラメータの取得
 		CollisionParams object_body_collision_params = object->GetCollisionParams();
-		// swordの場合は無視
-		if (object_body_collision_params.collision_object_type == CollisionObjectType::SWORD)
+		// player,enemy以外の場合は無視
+		if (object_body_collision_params.collision_object_type != CollisionObjectType::PLAYER
+			&& object_body_collision_params.collision_object_type != CollisionObjectType::ENEMY)
 		{
 			continue;
 		}
@@ -329,7 +314,7 @@ void SceneBase::UpdateCheckCollision()
 bool SceneBase::CheckCollision(GameObject* target, const CollisionParams& collision_params, const CollisionParams& hit_collision_params)
 {
 	collision_params.collision_object_type; // GROUND = 1, PLAYER = 2, ENEMY = 4
-	collision_params.hit_object_types; // bit演算
+	//collision_params.hit_object_types; // bit演算
 	collision_params.collision_type; // BLOCK or OVERLAP
 
 	// x軸, y軸の距離を算出

@@ -15,7 +15,7 @@ void Sword::Initialize()
 	__super::Initialize();
 	is_active = false;
 	const Vector2D ATTACK_BOX_EXTENT = Vector2D{ 20.0f, 40.0f };
-	body_collision_params = {GetPosition(), ATTACK_BOX_EXTENT, CollisionObjectType::SWORD, 0, CollisonType::OVERLAP };
+	body_collision_params = {GetPosition(), ATTACK_BOX_EXTENT, CollisionObjectType::SWORD, CollisonType::OVERLAP };
 	center_dir = Vector2D(ATTACK_BOX_EXTENT / 2);
 }
 

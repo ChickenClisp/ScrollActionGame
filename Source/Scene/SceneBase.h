@@ -127,9 +127,6 @@ protected:
 	// シーンで生成したオブジェクト
 	std::vector<class GameObject*> objects;
 
-	// 移動可能オブジェクト配列
-	std::vector<class GameObject*> move_objects;
-
 	// スクロール座標の原点
 	Vector2D screen_offset;
 

@@ -13,6 +13,7 @@ Player::Player()
 	, is_invincible()
 	, invincible_timer()
 	, key()
+	, is_active()
 {
 }
 
@@ -27,24 +28,6 @@ void Player::Initialize()
 	// 画像の読み込み
 	GraphicResourceManager& graphic_resource_manager = GraphicResourceManager::GetInstance();
 	std::vector<int> out_sprite_handles;
-	/*
-	// IDLE
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_wait_a.bmp"), 4, 4, 1, 128, 128, out_sprite_handles);
-	graphic_handles_map.emplace(AnimType::IDLE, out_sprite_handles);
-	// RUN
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_run8.bmp"), 8, 4, 2, 128, 128, out_sprite_handles);
-	graphic_handles_map.emplace(AnimType::RUN, out_sprite_handles);
-	// JUMP
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_jump.bmp"), 6, 4, 2, 128, 128, out_sprite_handles);
-	graphic_handles_map.emplace(AnimType::JUMP, out_sprite_handles);
-	// ATTACK
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_attack.bmp"), 3, 3, 1, 128, 128, out_sprite_handles);
-	graphic_handles_map.emplace(AnimType::ATTACK, out_sprite_handles);
-	//DAMAGE
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/collon_damage.bmp"), 1, 1, 1, 128, 128, out_sprite_handles);
-	graphic_handles_map.emplace(AnimType::DAMAGED, out_sprite_handles);
-	*/
-
 	// IDLE
 	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Player/player_idle.png"), 4, 4, 1, 50, 50, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::IDLE, out_sprite_handles);
@@ -69,9 +52,10 @@ void Player::Initialize()
 	current_isground = IsGround::OnGround;
 
 	center_dir = Vector2D(25.0f, 25.0f);
-	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{25, 40}, CollisionObjectType::PLAYER , 0, CollisonType::BLOCK };
+	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{25, 40}, CollisionObjectType::PLAYER , CollisonType::BLOCK };
 	hp = 10;
 	attack_power = 1;
+	is_active = true;
 }
 
 void Player::Update(float delta_seconds)
@@ -82,7 +66,7 @@ void Player::Update(float delta_seconds)
 	const float GRAVITY = 45.0f;
 	UpdateInput();
 	UpdateInvincibleTimer();
-	printfDx("%d\n", current_player_state);
+
 	prev_position = GetPosition();
 
 	// もしAorDが押されていなかったら、速度を下げる
@@ -179,8 +163,8 @@ void Player::Update(float delta_seconds)
 	// 移動ベクトルを求める	
 	delta_position = verocity * delta_seconds;
 	// 新しいx座標がステージ外であった場合、移動ベクトルを0にする
-	if (prev_position.x + delta_position.x < - (128 - (64 + body_collision_params.box_extent.x / 2)) ||
-		(prev_position.x + delta_position.x) > (owner_scene->stage_size.x - (128- (64 - body_collision_params.box_extent.x / 2))))
+	if (prev_position.x + delta_position.x <  - (body_collision_params.box_extent.x / 2) ||
+		(prev_position.x + delta_position.x) > (owner_scene->stage_size.x - (body_collision_params.box_extent.x * 3 / 2)))
 	{
 		delta_position.x = 0.0f;
 	}
@@ -226,7 +210,7 @@ void Player::Draw(const Vector2D& screen_offset)
 		}
 		
 	}
-
+	
 	// デバッグ用　コリジョンの表示
 	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 50, y - screen_offset_y + 50, GetColor(0, 0, 255), false);
 	DrawBox(body_collision_params.center_position.x - (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,
@@ -242,7 +226,7 @@ void Player::Finalize()
 	__super::Finalize();
 
 	// 画像の破棄
-	DeleteGraph(graphic_handle);
+	//DeleteGraph(graphic_handle);
 	graphic_handle = 0;
 }
 
@@ -305,8 +289,6 @@ void Player::OnEnterPlayerState(PlayerState state)
 void Player::OnLeavePlayerState(PlayerState state)
 {
 	switch (state) {
-	case PlayerState::JUMP:
-		current_isground = IsGround::OnGround;
 	case PlayerState::ATTACK:
 		// swordを無効化
 		equipped_sword->SetActive(false);
@@ -341,6 +323,12 @@ void Player::UpdateInvincibleTimer()
 	}
 }
 
+void Player::OnGoalReached()
+{
+	IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
+	in_game_scene->OnPlayerGoalReached();
+}
+
 void Player::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction)
 {
 	switch (hit_collsion_direction)
@@ -370,13 +358,31 @@ void Player::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirect
 
 void Player::OnHitObject(class GameObject* opponent_gameobject)
 {
-	
+	// 衝突オブジェクトがITEMの場合
+	if (opponent_gameobject->GetCollisionParams().collision_object_type == CollisionObjectType::ITEM)
+	{
+		OnGoalReached();
+	}
+
+	// 衝突オブジェクトがENEMYの場合
+	if (opponent_gameobject->GetCollisionParams().collision_object_type == CollisionObjectType::ENEMY)
+	{
+		// プレイヤーが無敵でない場合
+		if (is_invincible == false)
+		{
+			// 敵からプレイヤーへの攻撃イベントを行う
+			IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
+			EnemyBase* enemy = dynamic_cast<EnemyBase*>(opponent_gameobject);
+			in_game_scene->EnemytoPlayerAttackEvent(enemy);
+		}
+
+	}
 }
 
 void Player::OnDamaged(int damage, Character* damaged_character)
 {
 	__super::OnDamaged(damage, damaged_character);
-	const float INVINCIBLE_TIMER = 60.0f; // 無敵時間
+	const float INVINCIBLE_TIMER = 120.0f; // 無敵時間
 	const float NOCKBACK_DELTA_POSITION = 20.0f; // ノックバックで動く距離
 	// 少しの時間だけ無敵
 	SetInvincibleMode(true, INVINCIBLE_TIMER);
@@ -392,5 +398,5 @@ void Player::OnDamaged(int damage, Character* damaged_character)
 void Player::OnDead()
 {
 	__super::OnDead();
-	owner_scene->DestroyObject(this);
+	is_active = false;
 }

@@ -54,6 +54,10 @@ private:
 	void OnLeavePlayerState(PlayerState state);
 	void UpdateInput();
 	void UpdateInvincibleTimer();
+	void OnGoalReached();
+
+public:
+	bool is_active;
 private:
 	PlayerState current_player_state;
 	class Sword* equipped_sword; 

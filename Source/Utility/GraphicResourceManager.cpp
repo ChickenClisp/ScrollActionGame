@@ -26,6 +26,7 @@ void GraphicResourceManager::LoadDivGraphicResource(const std::string file_name,
 	// ‚·‚Å‚É‘¶İ‚µ‚Ä‚¢‚éê‡, ‚»‚Ìvalue‚ğ•Ô‚·
 	if (loaded_graphic_resources.find(file_name) != loaded_graphic_resources.end())
 	{
+		handle_buf = {};
 		handle_buf.push_back(loaded_graphic_resources[file_name]);
 		for (int i = 1; i < all_num; i++)
 		{

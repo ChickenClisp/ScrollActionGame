@@ -19,7 +19,9 @@ void BackImage::Initialize()
 	graphic_handle_scroll[0] = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/BackGround/background_layer_1_720_480.png"));
 	graphic_handle_scroll[1] = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/BackGround/background_layer_2_720_480.png"));
 	graphic_handle_scroll[2] = graphic_resource_manager.LoadGraphicResource(_T("Resources/Images/BackGround/background_layer_3_720_480.png"));
-	//graphic_handle_scroll = LoadGraph(_T("Resources/Images/backimage.png"));
+
+	// ƒƒ“ƒo[•Ï”‚Ì‰Šú‰»
+	body_collision_params = { Vector2D(), Vector2D(), CollisionObjectType::GROUND, CollisonType::OVERLAP };
 }
 
 void BackImage::Update(float delta_seconds)
