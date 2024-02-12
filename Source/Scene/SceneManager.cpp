@@ -4,8 +4,9 @@
 #include "DxLib.h"
 
 #include "SceneBase.h"
+#include "TitleScene/TitleScene.h"
 #include "IngameScene/IngameScene.h"
-#include "GAMEOVER_SCENE/GameOverScene.h"
+#include "GameOverScene/GameOverScene.h"
 
 SceneManager::SceneManager()
 	: current_scene(nullptr)
@@ -20,7 +21,7 @@ SceneManager::~SceneManager()
 void SceneManager::Initialize()
 {
 	// 開始シーンをINGAME_SCENEに設定
-	ChangeScene(SceneType::GAMEOVER_SCENE);
+	ChangeScene(SceneType::TITLE_SCENE);
 }
 
 void SceneManager::Update(float DeltaSeconds)
@@ -87,6 +88,7 @@ SceneBase* SceneManager::CreateScene(SceneType new_scene_type)
 {
 	switch (new_scene_type)
 	{
+	case SceneType::TITLE_SCENE:	return new TitleScene();
 	case SceneType::INGAME_SCENE:	return new IngameScene();
 	case SceneType::GAMEOVER_SCENE:	return new GameOverScene();
 	default:					return nullptr;

@@ -149,7 +149,7 @@ void IngameScene::InitStage()
 		enemy_list.push_back(CreateObject<Slime>(slime_position));
 	}
 	////// BigSlime
-	enemy_list.push_back(CreateObject<BigSlime>(Vector2D(300.0f, 320.0f)));
+	enemy_list.push_back(CreateObject<BigSlime>(Vector2D(4000.0f, 300.0f)));
 	// Ground
 	ground = CreateObject<Ground>(Vector2D());
 	ground->SetGroundData(stage_data);
