@@ -7,6 +7,7 @@ SceneBase::SceneBase()
 	, camera_position(Vector2D())
 	, ground(nullptr)
 	, stage_size()
+	, key()
 {
 }
 
@@ -343,4 +344,21 @@ bool SceneBase::IsHitMapChip(Vector2D edge_position)
 		return (chip_id != 0);
 	}
 	return false;
+}
+
+void SceneBase::UpdateInput()
+{
+	char _key[256];
+	GetHitKeyStateAll(_key);
+	for (int i = 0; i < 256; i++)
+	{
+		if (_key[i] != 0)
+		{
+			key[i]++;
+		}
+		else
+		{
+			key[i] = 0;
+		}
+	}
 }

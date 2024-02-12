@@ -13,7 +13,6 @@ Player::Player()
 	, is_invincible()
 	, invincible_timer()
 	, key()
-	, is_active()
 {
 }
 
@@ -115,12 +114,12 @@ void Player::Draw(const Vector2D& screen_offset)
 	//　前を向いている(x座標正方向)場合はDrawGraph
 	if (current_direction == Direction::FRONT)
 	{
-		// 無敵状態の場合、透明度をあげて描画
-		if (is_invincible == true)
+		// 攻撃を受けた場合、赤く描画する
+		if (current_player_state == PlayerState::DAMAGE)
 		{
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+			SetDrawBright(255, 0, 0);
 			DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+			SetDrawBright(255, 255, 255);
 		}
 		else
 		{
@@ -130,12 +129,12 @@ void Player::Draw(const Vector2D& screen_offset)
 	//　後ろを向いている(x座標負方向)場合はDrawTurnGraph
 	else
 	{
-		// 無敵状態の場合、透明度をあげて描画
-		if (is_invincible == true)
+		// 攻撃を受けた場合、赤く描画する
+		if (current_player_state == PlayerState::DAMAGE)
 		{
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+			SetDrawBright(255, 0, 0);
 			DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+			SetDrawBright(255, 255, 255);
 		}
 		else
 		{
@@ -347,7 +346,7 @@ void Player::OnEnterPlayerState(PlayerState state)
 		}
 		else if ((current_direction == Direction::BACK))
 		{
-			equipped_sword->SetPosition(this->GetPosition() + Vector2D(-5.0f, 5.0f));
+			equipped_sword->SetPosition(this->GetPosition() + Vector2D(-10.0f, 5.0f));
 			equipped_sword->UpdateCollisionParamsCenterPosition(equipped_sword);
 		}
 		break;
@@ -414,7 +413,7 @@ void Player::OnHitObject(class GameObject* opponent_gameobject)
 	// 衝突オブジェクトがENEMYの場合
 	if (opponent_gameobject->GetCollisionParams().collision_object_type == CollisionObjectType::ENEMY)
 	{
-		// プレイヤーが無敵でない場合
+		// プレイヤーが無敵でないとき
 		if (is_invincible == false)
 		{
 			// 敵からプレイヤーへの攻撃イベントを行う

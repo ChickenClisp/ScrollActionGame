@@ -10,13 +10,13 @@
 #define SLIME_DEAD (GraphicStructure{"Resources/Images/Enemy/Slime/slime_die.png", 4, 4, 1, 32, 32, 10})
 
 
-class Slime : public EnemyBase
+class BigSlime : public EnemyBase
 {
-	const float SPEED = 20.0f;  // スピード(x方向)
+	const float SPEED = 30.0f;  // スピード(x方向)
 	const float GRAVITY = 20.0f;     // 重力加速度
 public:
-	Slime();
-	virtual ~Slime();
+	BigSlime();
+	virtual ~BigSlime();
 
 public:
 	//~ Begin GameObject interface

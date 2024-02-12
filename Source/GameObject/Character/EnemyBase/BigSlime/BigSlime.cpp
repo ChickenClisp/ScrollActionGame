@@ -1,4 +1,4 @@
-#include "Slime.h"
+#include "BigSlime.h"
 
 #include "DxLib.h"
 #include "../Source/Utility/GraphicResourceManager.h"
@@ -8,35 +8,35 @@
 #include "../Source/Scene/IngameScene/IngameScene.h"
 #include "../Source/GameObject/Character/Player/Player.h"
 
-Slime::Slime()
+BigSlime::BigSlime()
 {
 }
 
-Slime::~Slime()
+BigSlime::~BigSlime()
 {
 	Finalize();
 }
 
-void Slime::Initialize()
+void BigSlime::Initialize()
 {
 	__super::Initialize();
 	// 画像の読み込み
 	GraphicResourceManager& graphic_resource_manager = GraphicResourceManager::GetInstance();
 	std::vector<int> out_sprite_handles;
 	// IDLE
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/slime_idle.png"), 4, 4, 1, 32, 32, out_sprite_handles);
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/bigslime_idle.png"), 4, 4, 1, 64, 64, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::IDLE, out_sprite_handles);
 	// RUN
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/slime_run.png"), 4, 4, 1, 32, 32, out_sprite_handles);
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/bigslime_run.png"), 4, 4, 1, 64, 64, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::RUN, out_sprite_handles);
 	// ATTACK
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/slime_attack.png"), 5, 5, 1, 32, 32, out_sprite_handles);
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/bigslime_attack.png"), 5, 5, 1, 64, 64, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::ATTACK, out_sprite_handles);
 	// DAMAGED(DAMAGEはIDLEと同じアニメーションとする)
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/slime_idle.png"), 4, 4, 1, 32, 32, out_sprite_handles);
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/bigslime_idle.png"), 4, 4, 1, 64, 64, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::DAMAGED, out_sprite_handles);
 	// DEAD
-	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/slime_die.png"), 4, 4, 1, 32, 32, out_sprite_handles);
+	graphic_resource_manager.LoadDivGraphicResource(_T("Resources/Images/Enemy/Slime/bigslime_die.png"), 4, 4, 1, 64, 64, out_sprite_handles);
 	graphic_handles_map.emplace(AnimType::DEAD, out_sprite_handles);
 
 
@@ -45,14 +45,14 @@ void Slime::Initialize()
 	ChangeEnemyState(EnemyState::RUN);
 	current_direction = Direction::FRONT;
 	current_isground = IsGround::OnGround;
-	center_dir = { 16, 16 };
-	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{20, 20}, CollisionObjectType::ENEMY , CollisonType::BLOCK };
-	search_radius = 30.0f;
-	hp = 3;
-	attack_power = 1;
+	center_dir = { 32, 32 };
+	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{40, 40}, CollisionObjectType::ENEMY , CollisonType::BLOCK };
+	search_radius = 70.0f;
+	hp = 8;
+	attack_power = 2;
 }
 
-void Slime::Update(float delta_seconds)
+void BigSlime::Update(float delta_seconds)
 {
 	__super::Update(delta_seconds);
 
@@ -62,16 +62,11 @@ void Slime::Update(float delta_seconds)
 	// EnemyStateの遷移条件のチェック
 	UpdateCheckConditionChangeEnemyState(current_enemy_state);
 
-	// ダメージステート中でなければ
-	if (current_enemy_state != EnemyState::DAMAGE)
-	{
-		// 移動
-		UpdateRun();
+	// 移動
+	UpdateRun();
 
-		// 索敵と攻撃
-		UpdateSearchAndAttack();
-	}
-	
+	// 索敵と攻撃
+	UpdateSearchAndAttack();
 
 	// 移動ベクトルを求める
 	verocity.y += GRAVITY;
@@ -92,7 +87,7 @@ void Slime::Update(float delta_seconds)
 	UpdateCollisionParamsCenterPosition(this);
 }
 
-void Slime::Draw(const Vector2D& screen_offset)
+void BigSlime::Draw(const Vector2D& screen_offset)
 {
 	__super::Draw(screen_offset);
 
@@ -100,7 +95,7 @@ void Slime::Draw(const Vector2D& screen_offset)
 	int x, y, screen_offset_x, screen_offset_y;
 	GetPosition().ToInt(x, y);
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
-	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 32, y - screen_offset_y + 32, GetColor(0, 0, 255), false);
+	DrawBox(x - screen_offset_x, y - screen_offset_y, x - screen_offset_x + 64, y - screen_offset_y + 64, GetColor(0, 0, 255), false);
 	DrawBox(body_collision_params.center_position.x - (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,
 		body_collision_params.center_position.y - (body_collision_params.box_extent.y / 2 - 1) - screen_offset_y,
 		body_collision_params.center_position.x + (body_collision_params.box_extent.x / 2 - 1) - screen_offset_x,
@@ -109,7 +104,7 @@ void Slime::Draw(const Vector2D& screen_offset)
 		false);
 }
 
-void Slime::Finalize()
+void BigSlime::Finalize()
 {
 	__super::Finalize();
 
@@ -118,18 +113,18 @@ void Slime::Finalize()
 	graphic_handle = 0;
 }
 
-void Slime::OnDamaged(Character* attack_character, Character* damaged_character)
+void BigSlime::OnDamaged(Character* attack_character, Character* damaged_character)
 {
 	__super::OnDamaged(attack_character, damaged_character);
 }
 
-void Slime::OnDead()
+void BigSlime::OnDead()
 {
 	__super::OnDead();
 	is_active = false;
 }
 
-void Slime::OnEnterEnemyState(EnemyState state)
+void BigSlime::OnEnterEnemyState(EnemyState state)
 {
 	switch (state) {
 	case EnemyState::IDLE:
@@ -143,7 +138,7 @@ void Slime::OnEnterEnemyState(EnemyState state)
 	case EnemyState::ATTACK:
 		SetAnimation(AnimType::ATTACK, 6, false);
 		break;
-	
+
 	case EnemyState::DAMAGE:
 		SetAnimation(AnimType::DAMAGED, 6, true);
 		verocity.x = 0.0f;
@@ -156,11 +151,11 @@ void Slime::OnEnterEnemyState(EnemyState state)
 	}
 }
 
-void Slime::OnLeaveEnemyState(EnemyState state)
+void BigSlime::OnLeaveEnemyState(EnemyState state)
 {
 }
 
-void Slime::UpdateCheckConditionChangeEnemyState(EnemyState state)
+void BigSlime::UpdateCheckConditionChangeEnemyState(EnemyState state)
 {
 	// SlimeStateの遷移条件
 	switch (current_enemy_state) {
@@ -186,7 +181,7 @@ void Slime::UpdateCheckConditionChangeEnemyState(EnemyState state)
 	}
 }
 
-void Slime::UpdateRun()
+void BigSlime::UpdateRun()
 {
 	if (current_enemy_state == EnemyState::RUN)
 	{
@@ -202,7 +197,7 @@ void Slime::UpdateRun()
 	}
 }
 
-void Slime::UpdateSearchAndAttack()
+void BigSlime::UpdateSearchAndAttack()
 {
 	// もしPlayerが索敵範囲内にいたら、攻撃する
 	IngameScene* in_game_scene = dynamic_cast<IngameScene*>(owner_scene);
@@ -222,10 +217,10 @@ void Slime::UpdateSearchAndAttack()
 			switch (current_direction)
 			{
 			case Direction::FRONT:
-				verocity.x = -60.0f;
+				verocity.x = -150.0f;
 				break;
 			case Direction::BACK:
-				verocity.x = 60.0f;
+				verocity.x = 150.0f;
 				break;
 			}
 		}

@@ -95,6 +95,8 @@ public:
 	CollisionParams GetCollisionParams() const { return body_collision_params; }
 	void SetCollisionParams(CollisionParams& collision_params);
 
+	bool GetActive() const { return is_active; }
+	void SetActive(bool b_active) { is_active = b_active; }
 
 	// animationの画像ハンドル, speedをセットする
 	virtual void SetAnimation(AnimType new_animtype, int new_animation_speed, bool b_loop);
@@ -104,6 +106,9 @@ protected:
 	virtual void UpdateAnimation();
 
 protected:
+	// オブジェクトの有効or無効フラグ
+	bool is_active;
+
 	// オーナーとなるシーン
 	class SceneBase* owner_scene;
 

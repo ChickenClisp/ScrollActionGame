@@ -15,6 +15,7 @@ enum class SceneType : unsigned short
 	TITLE_SCENE,
 	INGAME_SCENE,
 	GAMEOVER_SCENE,
+	GAMECLEAR_SCENE,
 };
 
 
@@ -120,6 +121,8 @@ public:
 	*/
 	bool IsHitMapChip(Vector2D position);
 
+protected:
+	void UpdateInput();
 
 public:
 	Vector2D stage_size;
@@ -134,4 +137,6 @@ protected:
 	Vector2D camera_position;
 
 	class Ground* ground;
+
+	int key[256];
 };

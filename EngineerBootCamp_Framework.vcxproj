@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Source\GameObject\BackImage\BackImage.cpp" />
     <ClCompile Include="Source\GameObject\Character\Character.cpp" />
+    <ClCompile Include="Source\GameObject\Character\EnemyBase\BigSlime\BigSlime.cpp" />
     <ClCompile Include="Source\GameObject\Character\EnemyBase\EnemyBase.cpp" />
     <ClCompile Include="Source\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="Source\GameObject\Character\EnemyBase\Slime\Slime.cpp" />
@@ -149,9 +150,11 @@
     <ClCompile Include="Source\GameObject\Ground\Ground.cpp" />
     <ClCompile Include="Source\GameObject\Sword\Sword.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Scene\GameOverScene\GameOverScene.cpp" />
     <ClCompile Include="Source\Scene\IngameScene\IngameScene.cpp" />
     <ClCompile Include="Source\Scene\SceneBase.cpp" />
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
+    <ClCompile Include="Source\Scene\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Source\Utility\CollisionParams.cpp" />
     <ClCompile Include="Source\Utility\GraphicResourceManager.cpp" />
     <ClCompile Include="Source\Utility\Vector2D.cpp" />
@@ -159,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="Source\GameObject\BackImage\BackImage.h" />
     <ClInclude Include="Source\GameObject\Character\Character.h" />
+    <ClInclude Include="Source\GameObject\Character\EnemyBase\BigSlime\BigSlime.h" />
     <ClInclude Include="Source\GameObject\Character\EnemyBase\EnemyBase.h" />
     <ClInclude Include="Source\GameObject\Character\Player\Player.h" />
     <ClInclude Include="Source\GameObject\Character\EnemyBase\Slime\Slime.h" />
@@ -166,9 +170,11 @@
     <ClInclude Include="Source\GameObject\Goal\Goal.h" />
     <ClInclude Include="Source\GameObject\Ground\Ground.h" />
     <ClInclude Include="Source\GameObject\Sword\Sword.h" />
+    <ClInclude Include="Source\Scene\GameOverScene\GameOverScene.h" />
     <ClInclude Include="Source\Scene\IngameScene\IngameScene.h" />
     <ClInclude Include="Source\Scene\SceneBase.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
+    <ClInclude Include="Source\Scene\TitleScene\TitleScene.h" />
     <ClInclude Include="Source\SystemTypes.h" />
     <ClInclude Include="Source\Utility\CollisionParams.h" />
     <ClInclude Include="Source\Utility\GraphicResourceManager.h" />

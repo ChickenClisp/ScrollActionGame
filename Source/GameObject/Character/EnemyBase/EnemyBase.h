@@ -31,8 +31,8 @@ protected:
 	void ChangeEnemyState(EnemyState new_state);
 	virtual void OnEnterEnemyState(EnemyState state);
 	virtual void OnLeaveEnemyState(EnemyState state);
+	virtual void OnDamaged(Character* attack_character, Character* damaged_character) override;
 	virtual void OnDead() override;
-	void UpdateCollisionParams();
 
 protected:
 	EnemyState current_enemy_state;

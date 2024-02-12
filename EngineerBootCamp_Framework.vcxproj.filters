@@ -49,6 +49,9 @@
     <ClCompile Include="Source\GameObject\Character\EnemyBase\EnemyBase.cpp" />
     <ClCompile Include="Source\GameObject\Sword\Sword.cpp" />
     <ClCompile Include="Source\GameObject\Goal\Goal.cpp" />
+    <ClCompile Include="Source\GameObject\Character\EnemyBase\BigSlime\BigSlime.cpp" />
+    <ClCompile Include="Source\Scene\GameOverScene\GameOverScene.cpp" />
+    <ClCompile Include="Source\Scene\TitleScene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\SystemTypes.h">
@@ -81,6 +84,9 @@
     <ClInclude Include="Source\GameObject\Character\EnemyBase\EnemyBase.h" />
     <ClInclude Include="Source\GameObject\Sword\Sword.h" />
     <ClInclude Include="Source\GameObject\Goal\Goal.h" />
+    <ClInclude Include="Source\GameObject\Character\EnemyBase\BigSlime\BigSlime.h" />
+    <ClInclude Include="Source\Scene\GameOverScene\GameOverScene.h" />
+    <ClInclude Include="Source\Scene\TitleScene\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Resources\Images\collon_jump.bmp" />

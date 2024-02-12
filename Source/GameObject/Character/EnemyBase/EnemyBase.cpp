@@ -42,12 +42,33 @@ void EnemyBase::Draw(const Vector2D& screen_offset)
 	//　前を向いている(x座標正方向)場合はDrawGraph
 	if (current_direction == Direction::FRONT)
 	{
-		DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+		// 攻撃を受けた場合、赤く描画する
+		if (current_enemy_state == EnemyState::DAMAGE)
+		{
+			SetDrawBright(255, 0, 0);
+			DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+			SetDrawBright(255, 255, 255);
+		}
+		else
+		{
+			DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+		}
 	}
 	//　後ろを向いている(x座標負方向)場合はDrawTurnGraph
 	else
 	{
-		DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+		// 攻撃を受けた場合、赤く描画する
+		if (current_enemy_state == EnemyState::DAMAGE)
+		{
+			SetDrawBright(255, 0, 0);
+			DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+			SetDrawBright(255, 255, 255);
+		}
+		else
+		{
+			DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
+		}
+
 	}
 }
 
@@ -75,15 +96,16 @@ void EnemyBase::OnLeaveEnemyState(EnemyState state)
 {
 }
 
+void EnemyBase::OnDamaged(Character* attack_character, Character* damaged_character)
+{
+	__super::OnDamaged(attack_character, damaged_character);
+	// ダメージステートに変更
+	ChangeEnemyState(EnemyState::DAMAGE);
+}
+
 void EnemyBase::OnDead()
 {
 	__super::OnDead();
-}
-
-void EnemyBase::UpdateCollisionParams()
-{
-	// コリジョンパラメータの更新
-	body_collision_params.center_position = GetPosition() + center_dir;
 }
 
 void EnemyBase::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDirection hit_collsion_direction)
@@ -92,22 +114,22 @@ void EnemyBase::OnHitGroundCollision(float hit_mapchip_position, HitCollisionDir
 	{
 	case HitCollisionDirection::BOTTOM:
 		position.y = hit_mapchip_position - (body_collision_params.box_extent.y / 2 - 1) - center_dir.y;
-		UpdateCollisionParams();
+		UpdateCollisionParamsCenterPosition(this);
 		verocity.y = 0.0f;
 		current_isground = IsGround::OnGround;
 		break;
 	case HitCollisionDirection::TOP:
 		position.y = hit_mapchip_position + SIZE_CHIP_HEIGHT + (body_collision_params.box_extent.y / 2 - 1) - center_dir.y;
-		UpdateCollisionParams();
+		UpdateCollisionParamsCenterPosition(this);
 		break;
 	case HitCollisionDirection::RIGHT:
 		position.x = hit_mapchip_position - (body_collision_params.box_extent.x / 2 - 1) - center_dir.x;
-		UpdateCollisionParams();
+		UpdateCollisionParamsCenterPosition(this);
 		current_direction = Direction::FRONT;
 		break;
 	case HitCollisionDirection::LEFT:
 		position.x = hit_mapchip_position + SIZE_CHIP_WIDTH + (body_collision_params.box_extent.x / 2 - 1) - center_dir.x;
-		UpdateCollisionParams();
+		UpdateCollisionParamsCenterPosition(this);
 		current_direction = Direction::BACK;
 		break;
 	case HitCollisionDirection::NOHIT:

@@ -3,10 +3,6 @@
 #include "../SceneBase.h"
 #include "../Source/GameObject/Character/EnemyBase/EnemyBase.h"
 
-/**
- * サンプルシーン
- * サンプル用に簡易的に実装
- */
 class IngameScene : public SceneBase
 {
 public:
@@ -48,8 +44,9 @@ public:
 	void EnemytoPlayerAttackEvent(EnemyBase* enemy_base);
 	/**
 	 * プレイヤーの死亡イベント
+	 * @return scene_type 変更後のシーンタイプ
 	 */
-	void OnPlayerDead();
+	SceneType OnPlayerDead();
 	/**
 	 * プレイヤーのゴールイベント
 	 */
@@ -67,11 +64,10 @@ private:
 	*/
 	void InitStage();
 
-public:
-	class Player* player;
 private:
 	std::vector<std::vector<int>> stage_data;
-	//class Player* player;
+	class Player* player;
+	std::vector<class EnemyBase*> enemy_list;
 	bool is_goal;
 	int player_life;
 };

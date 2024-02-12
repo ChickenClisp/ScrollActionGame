@@ -3,7 +3,8 @@
 #include <cmath>
 
 GameObject::GameObject()
-	: owner_scene(nullptr)
+	: is_active(true)
+	, owner_scene(nullptr)
 	, position(Vector2D())
 	, draw_sort_priority(0)
 	, body_collision_params()

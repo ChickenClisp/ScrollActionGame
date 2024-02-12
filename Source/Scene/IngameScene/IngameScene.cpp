@@ -2,6 +2,7 @@
 #include "../../SystemTypes.h"
 #include "../../GameObject/Character/Player/Player.h"
 #include "../../GameObject/Character/EnemyBase/Slime/Slime.h"
+#include "../../GameObject/Character/EnemyBase/BigSlime/BigSlime.h"
 #include "../../GameObject/BackImage/BackImage.h"
 #include "../../GameObject/Ground/Ground.h"
 #include "../../GameObject/Sword/Sword.h"
@@ -15,6 +16,7 @@
 IngameScene::IngameScene()
 	: stage_data()
 	, player(nullptr)
+	, enemy_list()
 	, is_goal()
 	, player_life()
 {
@@ -60,12 +62,19 @@ SceneType IngameScene::Update(float delta_seconds)
 	// スクロール用変数(x座標)の更新
 	screen_offset.x = camera_position.x - float(SCREEN_RESOLUTION_X / 2);
 
-	// playerチェック
-	if (player->is_active == false)
+	// playerの生存チェック
+	if (player->GetActive() == false)
 	{
-		OnPlayerDead();
+		result_scene_type = OnPlayerDead();
 	}
-	
+	// enemyの生存チェック
+	for (auto &enemy : enemy_list)
+	{
+		if (enemy->GetActive() == false)
+			DestroyObject(enemy);
+	}
+
+	// 現在のシーンタイプを返す
 	return result_scene_type;
 }
 
@@ -76,8 +85,6 @@ void IngameScene::Draw()
 
 	std::string string_player_life = "LEFT: " + std::to_string(player_life);
 	DrawStringF(20, 10, string_player_life.c_str(), GetColor(255, 255, 255));
-
-
 
 	// ゴールした場合、GOAL!!を表示
 	if (is_goal == true)
@@ -123,17 +130,27 @@ void IngameScene::LoadCSV(const std::string& filename, std::vector<std::vector<i
 void IngameScene::InitStage()
 {
 	// Objectを生成
+	// BackImage
 	CreateObject<BackImage>(Vector2D(SCREEN_RESOLUTION_X / 2.0f, SCREEN_RESOLUTION_Y / 2.0f));
+	// Goal
 	CreateObject<Goal>(Vector2D(4300.0f, 205.0f));
-	player = CreateObject<Player>(Vector2D(SCREEN_RESOLUTION_X / 8.0f, SCREEN_RESOLUTION_Y * 3.0f / 4.0f));
-	CreateObject<Slime>(Vector2D(500.0f, 320.0f));
-	CreateObject<Slime>(Vector2D(700.0f, 360.0f));
-	CreateObject<Slime>(Vector2D(900.0f, 360.0f));
-	CreateObject<Slime>(Vector2D(2700.0f, 340.0f));
-	CreateObject<Slime>(Vector2D(4000.0f, 340.0f));
-	CreateObject<Slime>(Vector2D(4100.0f, 340.0f));
+	// Player
+	player = CreateObject<Player>(Vector2D(90.0f, 360.0f));
+	// Sword
 	class Sword* sword = CreateObject<Sword>(Vector2D());
 	player->SetSword(sword);
+	// Enemy
+	////// Slime
+	std::vector<Vector2D> slime_list_position = { Vector2D(500.0f, 320.0f), Vector2D(700.0f, 360.0f), Vector2D(900.0f, 360.0f)
+												, Vector2D(900.0f, 360.0f), Vector2D(2700.0f, 340.0f), Vector2D(4000.0f, 340.0f)
+												, Vector2D(4100.0f, 340.0f) };
+	for (auto& slime_position : slime_list_position)
+	{
+		enemy_list.push_back(CreateObject<Slime>(slime_position));
+	}
+	////// BigSlime
+	enemy_list.push_back(CreateObject<BigSlime>(Vector2D(300.0f, 320.0f)));
+	// Ground
 	ground = CreateObject<Ground>(Vector2D());
 	ground->SetGroundData(stage_data);
 }
@@ -199,7 +216,7 @@ void IngameScene::EnemytoPlayerAttackEvent(EnemyBase* enemy_base)
 	}
 }
 
-void IngameScene::OnPlayerDead()
+SceneType IngameScene::OnPlayerDead()
 {
 	// プレイヤー残機を1減らす
 	player_life--;
@@ -208,9 +225,8 @@ void IngameScene::OnPlayerDead()
 	{
 		// すべてのオブジェクトを削除
 		DestroyAllObjects();
-		// シーン遷移
-		/*******************
-		********************/
+		// シーンをGAMEOVER_SCENEに変更して返す
+		return SceneType::GAMEOVER_SCENE;
 	}
 	// プレイヤー残機が1以上の場合
 	else
@@ -218,6 +234,8 @@ void IngameScene::OnPlayerDead()
 		// ステージの初期化
 		DestroyAllObjects();
 		InitStage();
+		// シーンは変更しない
+		return GetSceneType();
 	}
 }
 
