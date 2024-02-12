@@ -70,4 +70,6 @@ private:
 	std::vector<class EnemyBase*> enemy_list;
 	bool is_goal;
 	int player_life;
+	float start_timer;
+	float ingame_timer;
 };

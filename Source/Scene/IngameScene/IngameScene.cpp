@@ -19,6 +19,8 @@ IngameScene::IngameScene()
 	, enemy_list()
 	, is_goal()
 	, player_life()
+	, start_timer()
+	, ingame_timer()
 {
 }
 
@@ -30,6 +32,8 @@ void IngameScene::Initialize()
 	// 変数の初期化
 	is_goal = false;
 	player_life = 3;
+	start_timer = GetNowCount();
+	ingame_timer = start_timer;
 
 	// マップの読み込み
 	LoadCSV("Resources/stage2.csv", stage_data);
@@ -62,6 +66,9 @@ SceneType IngameScene::Update(float delta_seconds)
 	// スクロール用変数(x座標)の更新
 	screen_offset.x = camera_position.x - float(SCREEN_RESOLUTION_X / 2);
 
+	// ingame_timerの加算
+	ingame_timer = GetNowCount() - start_timer;
+
 	// playerの生存チェック
 	if (player->GetActive() == false)
 	{
@@ -83,18 +90,26 @@ void IngameScene::Draw()
 	// 親クラスのDraw()
 	__super::Draw();
 
+	// 残機を左上に表示
 	std::string string_player_life = "LEFT: " + std::to_string(player_life);
 	DrawStringF(20, 10, string_player_life.c_str(), GetColor(255, 255, 255));
 
-	// ゴールした場合、GOAL!!を表示
+	// 操作方法を右上に表示
+	DrawStringF(SCREEN_RESOLUTION_X - 150.0f, 0.0f,  "A    : 左移動", GetColor(255, 255, 255));
+	DrawStringF(SCREEN_RESOLUTION_X - 150.0f, 20.0f, "D    : 右移動", GetColor(255, 255, 255));
+	DrawStringF(SCREEN_RESOLUTION_X - 150.0f, 40.0f, "E    : 攻撃", GetColor(255, 255, 255));
+	DrawStringF(SCREEN_RESOLUTION_X - 150.0f, 60.0f, "SPACE: ジャンプ", GetColor(255, 255, 255));
+
+	// timeの表示
+	int seconds = ingame_timer / 1000;
+	std::string str = std::to_string(seconds);
+	DrawStringF(330, 20, "Time:", GetColor(255, 255, 255));
+	DrawStringF(380, 20, str.c_str(), GetColor(255, 255, 255));
+
+	// ゴールした場合、CLEARを表示
 	if (is_goal == true)
 	{
-		DrawString(SCREEN_RESOLUTION_X / 2.0f - 30.0f, SCREEN_RESOLUTION_Y / 2.0f, "GOAL!!", GetColor(255, 255, 255));
-	}
-	// プレイヤーの残機が0になった場合、Game Over...を表示
-	if (player_life == 0)
-	{
-		DrawString(SCREEN_RESOLUTION_X / 2.0f - 100.0f, SCREEN_RESOLUTION_Y / 2.0f, "Game Over...", GetColor(255, 255, 255));
+		DrawExtendString(SCREEN_RESOLUTION_X / 2.0f - 30.0f, SCREEN_RESOLUTION_Y / 2.0f, 2.0f, 2.0f, "CLEAR", GetColor(255, 255, 255));
 	}
 }
 
@@ -142,8 +157,7 @@ void IngameScene::InitStage()
 	// Enemy
 	////// Slime
 	std::vector<Vector2D> slime_list_position = { Vector2D(500.0f, 320.0f), Vector2D(700.0f, 360.0f), Vector2D(900.0f, 360.0f)
-												, Vector2D(900.0f, 360.0f), Vector2D(2700.0f, 340.0f), Vector2D(4000.0f, 340.0f)
-												, Vector2D(4100.0f, 340.0f) };
+												, Vector2D(2700.0f, 340.0f), Vector2D(4000.0f, 340.0f), Vector2D(4100.0f, 340.0f) };
 	for (auto& slime_position : slime_list_position)
 	{
 		enemy_list.push_back(CreateObject<Slime>(slime_position));
@@ -178,7 +192,9 @@ bool IngameScene::IsFoundPlayer(EnemyBase* enemy_base)
 
 Direction IngameScene::VectorEnemytoPlayer(EnemyBase* enemy_base)
 {
+	// ベクトルEnemytoPlayerの計算
 	Vector2D vec = player->GetPosition() - enemy_base->GetPosition();
+	// 
 	if (vec.x > 0.0f) {
 		return Direction::BACK;
 	}
@@ -190,6 +206,7 @@ Direction IngameScene::VectorEnemytoPlayer(EnemyBase* enemy_base)
 
 Direction IngameScene::VectorPlayertoEnemy(EnemyBase* enemy_base)
 {
+	// ベクトルPlayertoEnemyの計算
 	Vector2D vec = enemy_base->GetPosition() - player->GetPosition();
 	if (vec.x > 0.0f) {
 		return Direction::FRONT;

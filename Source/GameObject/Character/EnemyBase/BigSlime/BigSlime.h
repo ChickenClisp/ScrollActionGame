@@ -12,8 +12,9 @@
 
 class BigSlime : public EnemyBase
 {
-	const float SPEED = 30.0f;  // スピード(x方向)
+	const float SPEED = 40.0f;  // スピード(x方向)
 	const float GRAVITY = 20.0f;     // 重力加速度
+	const float ATTACK_INTERVAL_TIME = 80.0f; // 再攻撃までの時間
 public:
 	BigSlime();
 	virtual ~BigSlime();
@@ -34,4 +35,9 @@ private:
 	void UpdateCheckConditionChangeEnemyState(EnemyState state);
 	void UpdateRun();
 	void UpdateSearchAndAttack();
+	void UpdateAttackIntervalTimer();
+
+private:
+	bool is_wait;
+	float attack_interval_timer;
 };

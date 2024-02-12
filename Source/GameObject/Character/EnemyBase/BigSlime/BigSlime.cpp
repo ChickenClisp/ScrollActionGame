@@ -9,6 +9,8 @@
 #include "../Source/GameObject/Character/Player/Player.h"
 
 BigSlime::BigSlime()
+	: is_wait()
+	, attack_interval_timer()
 {
 }
 
@@ -47,9 +49,12 @@ void BigSlime::Initialize()
 	current_isground = IsGround::OnGround;
 	center_dir = { 32, 32 };
 	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{40, 40}, CollisionObjectType::ENEMY , CollisonType::BLOCK };
-	search_radius = 70.0f;
+	search_radius = 400.0f;
 	hp = 8;
 	attack_power = 2;
+
+	is_wait = false;
+	attack_interval_timer = ATTACK_INTERVAL_TIME;
 }
 
 void BigSlime::Update(float delta_seconds)
@@ -59,14 +64,21 @@ void BigSlime::Update(float delta_seconds)
 	// 現在の位置を取得
 	prev_position = GetPosition();
 
+	// タイマーを動かす
+	UpdateAttackIntervalTimer();
+
 	// EnemyStateの遷移条件のチェック
 	UpdateCheckConditionChangeEnemyState(current_enemy_state);
 
-	// 移動
-	UpdateRun();
+	if (!is_wait)
+	{
+		// 移動
+		UpdateRun();
 
-	// 索敵と攻撃
-	UpdateSearchAndAttack();
+		// 索敵と攻撃
+		UpdateSearchAndAttack();
+	}
+	
 
 	// 移動ベクトルを求める
 	verocity.y += GRAVITY;
@@ -136,7 +148,7 @@ void BigSlime::OnEnterEnemyState(EnemyState state)
 		break;
 
 	case EnemyState::ATTACK:
-		SetAnimation(AnimType::ATTACK, 6, false);
+		SetAnimation(AnimType::ATTACK, 3, false);
 		break;
 
 	case EnemyState::DAMAGE:
@@ -153,6 +165,11 @@ void BigSlime::OnEnterEnemyState(EnemyState state)
 
 void BigSlime::OnLeaveEnemyState(EnemyState state)
 {
+	switch (state) {
+	case EnemyState::ATTACK:
+		is_wait = true;
+		break;
+	}
 }
 
 void BigSlime::UpdateCheckConditionChangeEnemyState(EnemyState state)
@@ -167,11 +184,11 @@ void BigSlime::UpdateCheckConditionChangeEnemyState(EnemyState state)
 		// ATTACKのアニメーションが終われば
 		if (animation_frame == graphic_handles_map[AnimType::ATTACK].size() - 1)
 		{
-			ChangeEnemyState(EnemyState::RUN);
+			ChangeEnemyState(EnemyState::IDLE);
 		}
 		break;
 	case EnemyState::DAMAGE:
-		// DAMAGEのアニメーションが終わったら、RUNにステートを変更
+		// DAMAGEのアニメーションが終わったら、IDLEにステートを変更
 		if (animation_frame == graphic_handles_map[AnimType::DAMAGED].size() - 1)
 		{
 			ChangeEnemyState(EnemyState::RUN);
@@ -217,12 +234,24 @@ void BigSlime::UpdateSearchAndAttack()
 			switch (current_direction)
 			{
 			case Direction::FRONT:
-				verocity.x = -150.0f;
+				verocity.x = -300.0f;
 				break;
 			case Direction::BACK:
-				verocity.x = 150.0f;
+				verocity.x = 300.0f;
 				break;
 			}
+		}
+	}
+}
+
+void BigSlime::UpdateAttackIntervalTimer()
+{
+	// インターバルならタイマーを動かす。0になったらfalseにする
+	if (is_wait) {
+		attack_interval_timer--;
+		if (attack_interval_timer <= 0) {
+			is_wait = false;
+			attack_interval_timer = ATTACK_INTERVAL_TIME;
 		}
 	}
 }
