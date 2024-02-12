@@ -164,10 +164,10 @@ void Slime::UpdateRun()
 		switch (current_direction)
 		{
 		case Direction::FRONT:
-			verocity.x = -30.0f;
+			verocity.x = -SPEED;
 			break;
 		case Direction::BACK:
-			verocity.x = 30.0f;
+			verocity.x = SPEED;
 			break;
 		}
 	}

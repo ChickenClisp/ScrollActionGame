@@ -75,7 +75,7 @@ void IngameScene::Draw()
 	__super::Draw();
 
 	std::string string_player_life = "LEFT: " + std::to_string(player_life);
-	DrawStringF(0, 0, string_player_life.c_str(), GetColor(255, 255, 255));
+	DrawStringF(20, 10, string_player_life.c_str(), GetColor(255, 255, 255));
 
 
 
@@ -132,9 +132,9 @@ void IngameScene::InitStage()
 	CreateObject<Slime>(Vector2D(2700.0f, 340.0f));
 	CreateObject<Slime>(Vector2D(4000.0f, 340.0f));
 	CreateObject<Slime>(Vector2D(4100.0f, 340.0f));
-	class Sword* sword = CreateObject<Sword>(Vector2D(0.0f, 0.0f));
+	class Sword* sword = CreateObject<Sword>(Vector2D());
 	player->SetSword(sword);
-	ground = CreateObject<Ground>(Vector2D(0, 0));
+	ground = CreateObject<Ground>(Vector2D());
 	ground->SetGroundData(stage_data);
 }
 

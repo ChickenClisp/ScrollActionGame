@@ -67,9 +67,11 @@ private:
 	*/
 	void InitStage();
 
+public:
+	class Player* player;
 private:
 	std::vector<std::vector<int>> stage_data;
-	class Player* player;
+	//class Player* player;
 	bool is_goal;
 	int player_life;
 };

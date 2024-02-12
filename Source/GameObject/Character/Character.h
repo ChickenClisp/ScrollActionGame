@@ -29,6 +29,7 @@ public:
 	//~ End GameObject interface
 	void ApplyDamage(Character* attack_character, Character* damaged_character);
 	int GetAttackPower() const { return attack_power; }
+	int GetHP() const { return hp; }
 
 protected:
 	virtual void OnDamaged(Character* attack_character, class Character* damaged_character);

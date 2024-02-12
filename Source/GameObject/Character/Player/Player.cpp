@@ -50,7 +50,6 @@ void Player::Initialize()
 	ChangePlayerState(PlayerState::IDLE);
 	current_direction = Direction::FRONT;
 	current_isground = IsGround::OnGround;
-
 	center_dir = Vector2D(25.0f, 25.0f);
 	body_collision_params = { Vector2D{GetPosition() + center_dir }, Vector2D{25, 40}, CollisionObjectType::PLAYER , CollisonType::BLOCK };
 	hp = 10;
@@ -113,8 +112,10 @@ void Player::Draw(const Vector2D& screen_offset)
 	int x, y, screen_offset_x, screen_offset_y;
 	GetPosition().ToInt(x, y);
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
+	//　前を向いている(x座標正方向)場合はDrawGraph
 	if (current_direction == Direction::FRONT)
 	{
+		// 無敵状態の場合、透明度をあげて描画
 		if (is_invincible == true)
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
@@ -126,8 +127,10 @@ void Player::Draw(const Vector2D& screen_offset)
 			DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
 		}
 	}
+	//　後ろを向いている(x座標負方向)場合はDrawTurnGraph
 	else
 	{
+		// 無敵状態の場合、透明度をあげて描画
 		if (is_invincible == true)
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
@@ -140,6 +143,11 @@ void Player::Draw(const Vector2D& screen_offset)
 		}
 		
 	}
+
+	// HPのUI表示
+	DrawStringF(20, 30, "HP", GetColor(255, 255, 255));
+	DrawBox(40, 30, 40 + 200, 45, GetColor(255, 0, 0), true);
+	DrawBox(40, 30, 40 + 200 - (20 * (10 - hp)), 45, GetColor(0, 255, 0), true);
 
 	// デバッグ用　ポジション表示
 	std::string string_position = "x:" + std::to_string(x) + ", y:" + std::to_string(y);

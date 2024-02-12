@@ -99,7 +99,8 @@ void SceneBase::UpdateCheckCollision()
 		for (auto opponent_object : objects)
 		{
 			// é©ï™é©êgÇ‹ÇΩÇÕGROUNDÇÃèÍçáÇÕñ≥éã
-			if (object == opponent_object || object_body_collision_params.collision_object_type == CollisionObjectType::GROUND)
+			if (object == opponent_object
+				|| object_body_collision_params.collision_object_type == CollisionObjectType::GROUND)
 			{
 				continue;
 			}

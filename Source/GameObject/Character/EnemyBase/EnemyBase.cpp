@@ -39,10 +39,12 @@ void EnemyBase::Draw(const Vector2D& screen_offset)
 	int x, y, screen_offset_x, screen_offset_y;
 	GetPosition().ToInt(x, y);
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
+	//　前を向いている(x座標正方向)場合はDrawGraph
 	if (current_direction == Direction::FRONT)
 	{
 		DrawGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);
 	}
+	//　後ろを向いている(x座標負方向)場合はDrawTurnGraph
 	else
 	{
 		DrawTurnGraph(x - screen_offset_x, y - screen_offset_y, graphic_handle, true);

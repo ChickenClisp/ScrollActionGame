@@ -12,8 +12,8 @@
 
 class Slime : public EnemyBase
 {
-	const float MAX_SPEED = 300.0f;  // 最大スピード(x方向)
-	const float GRAVITY = 30.0f;     // 重力加速度
+	const float SPEED = 20.0f;  // スピード(x方向)
+	const float GRAVITY = 20.0f;     // 重力加速度
 public:
 	Slime();
 	virtual ~Slime();

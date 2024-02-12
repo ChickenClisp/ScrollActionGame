@@ -37,8 +37,8 @@ void Character::Draw(const Vector2D& screen_offset)
 	int x, y, screen_offset_x, screen_offset_y;
 	GetPosition().ToInt(x, y);
 	screen_offset.ToInt(screen_offset_x, screen_offset_y);
-	std::string string_player_hp = "HP: " + std::to_string(hp);
-	DrawStringF(x - screen_offset_x, y - screen_offset_y - 10, string_player_hp.c_str(), GetColor(255, 255, 255));
+	std::string string_hp = "HP: " + std::to_string(hp);
+	DrawStringF(x - screen_offset_x, y - screen_offset_y - 10, string_hp.c_str(), GetColor(255, 255, 255));
 }
 
 void Character::Finalize()
